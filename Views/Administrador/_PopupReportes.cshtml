@@ -1,0 +1,118 @@
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="card" data-reporte="@ViewBag.denuncia.Id">
+                <div class="card-header">
+                    <h3>Reporte #@ViewBag.denuncia.Id</h3>
+                </div>
+                <div class="card-body">
+                    <h4>@ViewBag.denuncia.Asunto</h4>
+                    <p><b>Denuncia hecha por:</b> <a href="#">@ViewBag.denuncia.Denunciante</a></p>
+                    @if (ViewBag.denuncia.Id_Trueque != null)
+                    {
+                    <p><b>Trueque:</b> #@ViewBag.denuncia.Id_Trueque</p>
+                    }
+                    <p><b>Descripción:</b> @ViewBag.denuncia.Descripcion</p>
+                </div>
+                <div class="card-header">Usuarios Denunciados sin revisar</div>
+                <div class="card-body">
+                    <div class="row lista-denunciados">
+                        <!-- Denunciado -->
+
+                        @foreach (var denunciado in ViewBag.denunciados)
+                        {
+                        <div class="col-md-4 usuario-reportado" data-usuario="@denunciado.Denunciado">
+                            <div class="card text-white bg-rojo">
+                                <div class="card-header">@denunciado.Nombre @denunciado.Apellido</div>
+                                <div class="card-body">
+                                    <p>Email: <a href="#">@denunciado.Denunciado</a></p>
+                                    <p class="veces-denunciado">Ya ha sido denunciado @denunciado.Veces veces</p>
+                                </div>
+                                <div class="card-body text-right lista-botones">
+                                    <a href="#"><button type="button" class="btn btn-light">Ver Usuario</button></a>
+                                    <button type="button" class="btn btn-light boton-accion-reporte" data-accion="1" data-usuario="@denunciado.Denunciado">Ignorar</button>
+                                    <button type="button" class="btn btn-light boton-accion-reporte" data-accion="2" data-usuario="@denunciado.Denunciado">Amonestar</button>
+                                    <button type="button" class="btn btn-verde boton-suspender" data-usuario="@denunciado.Denunciado">Suspender</button>
+                                </div>
+                                <div class="card-footer bg-dark-danger footer-suspender">
+                                    @if (denunciado.SuspendidoDesde == null)
+                                    {
+                                    <form>
+                                        <div class="form-group row">
+                                            <label for="suspenderInicio" class="col-form-label col-md-6">Fecha Inicio Suspención</label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control datepicker-suspension inicio-suspension" placeholder="Click para seleccionar">
+                                                <div class="invalid-feedback error-inicio"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="suspenderFin" class="col-form-label col-md-6">Fecha Fin Suspención</label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control datepicker-suspension fin-suspension" placeholder="Click para seleccionar">
+                                                <div class="invalid-feedback error-fin"></div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button type="button" class="btn btn-light boton-cancelar-suspension" data-usuario="@denunciado.Denunciado">Cancelar</button>
+                                            <button type="button" class="btn btn-verde boton-accion-reporte" data-accion="3" data-usuario="@denunciado.Denunciado">Suspender</button>
+                                        </div>
+                                    </form>
+                                    } else
+                                    {
+                                <div class="text-left">
+                                    <p>El usuario ya se encuentra suspendido</p>
+                                    <p>Suspendido desde: @denunciado.SuspendidoDesde.ToString("MM/dd/yy")</p>
+                                    <p>Suspendido hasta: @denunciado.SuspendidoHasta.ToString("MM/dd/yy")</p>
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-light boton-cancelar-suspension" data-usuario="@denunciado.Denunciado">Cancelar</button>
+                                    </div>
+                                </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        }
+
+                    </div>
+                </div>
+                <div class="card-header">Usuarios Denunciados revisados</div>
+                <div class="card-body">
+                    <div class="row" id="denunciados-revisados">
+
+                        <!-- Usuarios Revisados -->
+                        @foreach (var revisado in ViewBag.revisados)
+                        {
+                        <div class="col-md-4 usuario-reportado" data-usuario="@revisado.Denunciado" style="width: 564px; height: 290px; flex: 0 0 33.3333%;">
+                            <div class="card text-white bg-info">
+                                <div class="card-header">@revisado.Nombre @revisado.Apellido</div>
+                                <div class="card-body">
+                                    <p>Email: <a href="#">@revisado.Denunciado</a></p>
+                                </div>
+                                <div class="card-footer footer-suspender" style="height: 49px; padding: 0.75rem;">
+                                    @if (revisado.Accion == 1)
+                                    {
+                                        <small>Ignorado</small>
+                                    }
+                                    @if (revisado.Accion == 2)
+                                    {
+                                        <small>Amonestado</small>
+                                    }
+                                    @if (revisado.Accion == 3)
+                                    {
+                                        <small>Suspendido desde @revisado.SuspendidoDesde.ToString("MM/dd/yy") hasta @revisado.SuspendidoHasta.ToString("MM/dd/yy")</small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        }
+
+                    </div>
+                </div>
+                <div class="card-body text-right">
+                    <hr>
+                    <button type="button" id="cerrar-popup" class="btn btn-verde" data-reporte="@ViewBag.denuncia.Id">Cerrar Reporte</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

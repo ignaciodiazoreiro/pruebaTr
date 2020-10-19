@@ -1,0 +1,95 @@
+﻿@model Proyecto_TruequesUCR.Models.Administrador
+
+@{
+    //ViewBag.Title = "Perfil de " + ViewBag.nombre_completo;
+}
+@Styles.Render("~/Content/Comerciante/Perfil.css")
+
+@{
+    var nombre = "";
+    var apellido = "";
+    var foto = "";
+    var nombre_completo = "";
+    var esAdmin = "";
+    if (Request.IsAuthenticated)
+    {
+        var cookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+        FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
+        string[] userData = ticket.UserData.Split('&');
+        nombre = userData[0];
+        apellido = userData[1];
+        foto = userData[2];
+        esAdmin = userData[3];
+        nombre_completo = nombre + " " + apellido;
+    }
+}
+
+<!-- NAVBAR 2 -->
+<div class="containerNavBarGeneral">
+    <ul class="navBarGeneral">
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/ReportesPendientes">Reportes Pendientes</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/AdministracionUsuarios">Administración de Usuarios</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/Details?user=@User.Identity.Name">Ver Perfil del Administrador</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/HistorialTrueques/DashBoard">Estadísticas</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/AgregarAdmin">Agregar Administrador</a>
+        </li>
+        <li class="navBarGeneralLink">
+             <a href="@Url.Action("AdministrarCategorias", "Administrador")">Administrar categorías</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid h-100 w-100 d-inline-block">
+    <div class="row justify-content-center w-100">
+        <!-- Contenedor principal -->
+        <div class="col-md-7 mt-5 fondo-blanco h-100">
+            <div class="row">
+                <!-- Cuerpo del Perfil -->
+                <div class="col-md-12">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12 fondo-azul text-center">
+                            <img src="@Url.Content("~/Content/Images/Avatars/"+foto)" alt=@nombre_completo class="foto-perfil">
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table-responsive-md table-borderless w-100 mt-5">
+                                <tbody>
+                                    <!-- Nombre Completo -->
+                                    <tr class="d-flex">
+                                        <th class="col-md-3 text-right">Nombre</th>
+                                        <td class="col-md-9">@nombre_completo</td>
+                                    </tr>
+                                    <!-- Correo Electronico -->
+                                    <tr class="d-flex">
+                                        <th class="col-md-3 text-right">Correo Electrónico</th>
+                                        <td class="col-md-9">@User.Identity.Name</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/modernizr")
+}

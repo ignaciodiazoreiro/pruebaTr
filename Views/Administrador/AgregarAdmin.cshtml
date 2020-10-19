@@ -1,0 +1,191 @@
+﻿@model Proyecto_TruequesUCR.Models.Administrador
+
+@{
+    ViewBag.Title = "Agregar Administrador";
+}
+
+@Styles.Render("~/Content/Comerciante/Perfil.css")
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css")
+
+<!-- NAVBAR 2 -->
+<div class="containerNavBarGeneral">
+    <ul class="navBarGeneral">
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/ReportesPendientes">Reportes Pendientes</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/AdministracionUsuarios">Administración de Usuarios</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/Details?user=@User.Identity.Name">Ver Perfil del Administrador</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/HistorialTrueques/DashBoard">Estadísticas</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/AgregarAdmin">Agregar Administrador</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="@Url.Action("AdministrarCategorias", "Administrador" )">Administrar categorías</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid h-100 w-100 d-inline-block">
+    <div class="row justify-content-center w-100">
+        <!-- Contenedor principal -->
+        <div class="col-md-7 mt-5 fondo-blanco h-100">
+            <div class="row">
+                <!-- Cuerpo de Acción Principal -->
+                <div class="col-md-12">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12 fondo-azul text-center pt-3">
+                            <img src="~/Content/Logo/logoApp.png" alt="Logo de la Aplicación Web" class="foto-vista-admin">
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="row">
+                        <div class="col-md-12 mt-4">
+                            <form>
+                                <!-- Correo Electrónico -->
+                                <div class="form-row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text icono-mono">@@</span>
+                                            </div>
+                                            <input id="correo" type="email" class="form-control" required placeholder="Correo Electrónico">
+                                        </div>
+                                        <div id="error-correo" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Nombre y Apellido -->
+                                <div class="form-row mb-3">
+                                    <div class="col-md-6">
+                                        <input id="nombre" type="text" class="form-control" required placeholder="Nombre">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="apellido" type="text" class="form-control" required placeholder="Apellido(s)">
+                                    </div>
+                                    <div id="error-nombre-apellido" class="invalid-feedback"></div>
+                                </div>
+
+                                <!-- Contraseña -->
+                                <div class="form-row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text icono-mono">*</span>
+                                            </div>
+                                            <input id="contrasena" type="password" class="form-control" aria-describedby="passwordHelp" required placeholder="Contraseña">
+                                        </div>
+                                        <small id="passwordHelp" class="form-text text-muted">
+                                            La contraseña debe tener mínimo 8 caracteres, al menos un caracter especial (Ej: @@ _ -) y al menos un número.
+                                        </small>
+                                        <div id="error-contrasena" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Confirmación de Contraseña -->
+                                <div class="form-row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text icono-mono">*</span>
+                                            </div>
+                                            <input id="confirmPassword" type="password" class="form-control" required placeholder="Confirmar contraseña">
+                                        </div>
+                                        <div id="error-confirmar-contrasena" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Idioma y Zona -->
+                                <div class="form-row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text icono-mono">*</span>
+                                            </div>
+                                            <select id="idioma" class="form-control">
+                                                <option value="" disabled selected>Idioma</option>,
+                                                <option value="Árabe">Árabe</option>
+                                                <option value="Alemán">Alemán</option>
+                                                <option value="Coreano">Coreano</option>
+                                                <option value="Español">Español</option>
+                                                <option value="Francés">Francés</option>
+                                                <option value="Hindi">Hindi</option>
+                                                <option value="Inglés">Inglés</option>
+                                                <option value="Italiano">Italiano</option>
+                                                <option value="Japonés">Japonés</option>
+                                                <option value="Mandarín">Mandarín</option>
+                                                <option value="Portugués">Portugués</option>
+                                                <option value="Ruso">Ruso</option>
+                                            </select>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Usuario.Idioma, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text icono-mono">*</span>
+                                            </div>
+                                            <select id="zona" class="form-control">
+                                                <option value="" disabled selected>Zona Horaria</option>,
+                                                <option value="GMT-12:00">GMT-12:00</option>
+                                                <option value="GMT-11:00">GMT-11:00</option>
+                                                <option value="GMT-10:00">GMT-10:00</option>
+                                                <option value="GMT-09:00">GMT-09:00</option>
+                                                <option value="GMT-08:00">GMT-08:00</option>
+                                                <option value="GMT-07:00">GMT-07:00</option>
+                                                <option value="GMT-06:00">GMT-06:00</option>
+                                                <option value="GMT-05:00">GMT-05:00</option>
+                                                <option value="GMT-04:00">GMT-04:00</option>
+                                                <option value="GMT-03:00">GMT-03:00</option>
+                                                <option value="GMT-02:00">GMT-02:00</option>
+                                                <option value="GMT-01:00">GMT-01:00</option>
+                                                <option value="GMT-00:00">GMT-00:00</option>
+                                                <option value="GMT+01:00">GMT+01:00</option>
+                                                <option value="GMT+02:00">GMT+02:00</option>
+                                                <option value="GMT+03:00">GMT+03:00</option>
+                                                <option value="GMT+04:00">GMT+04:00</option>
+                                                <option value="GMT+05:00">GMT+05:00</option>
+                                                <option value="GMT+06:00">GMT+06:00</option>
+                                                <option value="GMT+07:00">GMT+07:00</option>
+                                                <option value="GMT+08:00">GMT+08:00</option>
+                                                <option value="GMT+09:00">GMT+09:00</option>
+                                                <option value="GMT+10:00">GMT+10:00</option>
+                                                <option value="GMT+11:00">GMT+11:00</option>
+                                                <option value="GMT+12:00">GMT+12:00</option>
+                                            </select>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Usuario.ZonaHoraria, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <!-- Botón de agregar -->
+                                <div class="form-row mb-3 justify-content-end">
+                                    <div class="col-sm-2">
+                                        <button id="cancelar" type="reset" class="btn btn-secundario-adicional w-100">Cancelar</button>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" id="agregar" class="btn btn-verde w-100">Agregar</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery-3.5.0.min.js");
+    @Scripts.Render("~/Scripts/Administrador/Administrador.js");
+    @Scripts.Render("~/bundles/jqueryval");
+}

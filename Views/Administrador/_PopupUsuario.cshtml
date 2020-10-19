@@ -1,0 +1,237 @@
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h3>@ViewBag.comerciante.Nombre @ViewBag.comerciante.Apellido</h3>
+                </div>
+                <!-- NAV -->
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active" id="tab-datos">Ver Datos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" id="tab-suspender">Suspender/Reactivar Cuenta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link bg-rojo" id="tab-cancelar">Cancelar Cuenta</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- BODY DE DATOS -->
+                <div class="card-body tab-body" id="tab-datos-body">
+                    <div class="row">
+                        <!-- Datos Personales -->
+                        <div class="col-md-6">
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Nombre</td>
+                                    <td>@ViewBag.comerciante.Nombre</td>
+                                </tr>
+                                <tr>
+                                    <td>Apellido:</td>
+                                    <td>@ViewBag.comerciante.Apellido</td>
+                                </tr>
+                                <tr>
+                                    <td>Fecha Nacimiento:</td>
+                                    @if (ViewBag.perfil.FechaNacimiento != null && ViewBag.perfil.FechaNacimiento != null)
+                                    {
+                                        <td>@ViewBag.perfil.FechaNacimiento</td>
+                                    }
+                                    else
+                                    {
+                                        <td><i>Sin definir</i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td>Correos Electrónicos:</td>
+                                    <td>
+                                        <a href="#" class="correo-principal">@ViewBag.comerciante.Email</a><br>
+                                        @foreach (var correo in ViewBag.correos)
+                                        {
+                                        <a href="#">@correo.EmailAlternativo1</a><br>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Teléfonos:</td>
+                                    @if (ViewBag.telefonos.Count > 0)
+                                    {
+                                        <td>
+                                            @foreach (var telefono in ViewBag.telefonos)
+                                            {
+                                                @telefono.Telefono<br>
+                                            }
+                                        </td>
+                                    } else
+                                    {
+                                        <td><i>Sin definir</i></td>
+                                    }
+
+                                </tr>
+                                <tr>
+                                    <td>País:</td>
+                                    @if (ViewBag.perfil.Pais != null && ViewBag.perfil.Pais.Length > 0)
+                                    {
+                                        <td>@ViewBag.perfil.Pais</td>
+                                    }
+                                    else
+                                    {
+                                        <td><i>Sin definir</i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td>Provincia:</td>
+                                    @if (ViewBag.perfil.Provincia_Estado != null && ViewBag.perfil.Provincia_Estado.Length > 0)
+                                    {
+                                        <td>@ViewBag.perfil.Provincia_Estado</td>
+                                    }
+                                    else
+                                    {
+                                        <td><i>Sin definir</i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td>Cantón:</td>
+                                    @if (ViewBag.perfil.Canton_Ciudad != null && ViewBag.perfil.Canton_Ciudad.Length > 0)
+                                    {
+                                        <td>@ViewBag.perfil.Canton_Ciudad</td>
+                                    }
+                                    else
+                                    {
+                                        <td><i>Sin definir</i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td>Dirección:</td>
+                                    @if (ViewBag.perfil.Direccion != null && ViewBag.perfil.Direccion.Length > 0)
+                                    {
+                                        <td>@ViewBag.perfil.Direccion</td>
+                                    }
+                                    else
+                                    {
+                                        <td><i>Sin definir</i></td>
+                                    }
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- INTERESES -->
+                        <div class="col-md-3">
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Intereses</td>
+                                    <td>
+                                        @if (ViewBag.categorias.Length == 0)
+                                        {
+                                            <i>El usuario no tiene intereses</i>
+                                        }
+                                        else
+                                        {
+                                            <a href="#">Interés 1</a><br>
+                                        }
+
+                                    </td>
+                                </tr>
+                                @for (var i = 1; i < ViewBag.categorias.Length; i++)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <a href="#">@ViewBag.categorias[i].Nombre_Categoria</a><br>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+                        <!-- FOTO -->
+                        <div class="col-md-3 text-center">
+                            <img src="@Url.Content("~/Content/Images/Avatars/" + @ViewBag.perfil.Foto)" class="avatar-administracion" alt="@ViewBag.comerciante.Nombre @ViewBag.comerciante.Apellido">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BODY DE SUSPENDER/REACTIVAR -->
+                <div class="card-body tab-body" id="tab-suspender-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Estado Actual:</h4>
+                            @if (ViewBag.comerciante.SuspendidoDesde == null)
+                            {
+                                <p style="display: inline">La cuenta de @ViewBag.comerciante.Nombre @ViewBag.comerciante.Apellido <p class="estado-suspencion" style="display: inline">no</p> se encuentra suspendida actualmente</p>
+                            }
+                            else
+                            {
+                                <p style="display: inline">La cuenta de @ViewBag.comerciante.Nombre @ViewBag.comerciante.Apellido <p class="estado-suspencion" style="display: inline"></p> se encuentra suspendida actualmente</p>
+                            }
+
+                        </div>
+                        <div class="col-md-3">
+                            <h4>Suspención</h4>
+                            <form>
+                                <div class="form-group row">
+                                    <label for="suspenderInicio" class="col-form-label col-md-5">Fecha Inicio Suspención</label>
+                                    <div class="col-md-7 p-0">
+                                        @if (ViewBag.comerciante.SuspendidoDesde == null)
+                                        {
+                                            <input type="text" class="form-control datepicker-suspension" id="suspenderInicio">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" id="suspenderInicio" value="@ViewBag.comerciante.SuspendidoDesde.ToString("MM/dd/yyyy")" readonly>
+                                        }
+                                        <div class="invalid-feedback" id="error-inicio"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="suspenderFin" class="col-form-label col-md-5">Fecha Fin Suspención</label>
+                                    <div class="col-md-7 p-0">
+                                        @if (ViewBag.comerciante.SuspendidoDesde == null)
+                                        {
+                                            <input type="text" class="form-control datepicker-suspension" id="suspenderFin">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" id="suspenderFin" value="@ViewBag.comerciante.SuspendidoHasta.ToString("MM/dd/yyyy")" readonly>
+                                        }
+                                        <div class="invalid-feedback" id="error-fin"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="text-right w-100" id="area-boton-suspencion">
+                                        @if (ViewBag.comerciante.SuspendidoDesde == null)
+                                        {
+                                            <button type="button" class="btn btn-verde align-self-right" id="boton-suspender" data-usuario="@ViewBag.comerciante.Email">Suspender</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-verde align-self-right" id="boton-reactivar" data-usuario="@ViewBag.comerciante.Email">Reactivar</button>
+                                        }
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BODY DE CANCELAR CUENTA -->
+                <div class="card-body tab-body" id="tab-cancelar-body">
+                    <h2 style="color: #dc3545;">Cancelar cuenta</h2>
+                    <p><b>Advertencia:</b> Este proceso cancelará la cuenta del usuario de manera irreversible</p>
+                    <p>¿Está seguro que desea continuar?</p>
+                    <button type="button" class="btn btn-info align-self-right" id="cancela-cancelar">Cancelar</button>
+                    <button type="button" class="btn btn-verde align-self-right" id="boton-cancelar" data-usuario="@ViewBag.comerciante.Email">Continuar</button>
+                </div>
+
+                <!-- BOTON DE SALIR -->
+                <div class="card-body text-right">
+                    <hr>
+                    <button type="button" class="btn btn-verde" id="cerrar-popup">Listo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

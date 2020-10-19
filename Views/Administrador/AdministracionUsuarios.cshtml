@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "Administración de Usuarios";
+}
+
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css")
+@Styles.Render("~/Content/Administrador/Administrador.css")
+@Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css")
+
+<!-- POPUP -->
+<div class="fondo-oscuro" id="fondo-oscuro">
+    <div class="popup-usuarios mt-4" id="popup-content">
+    </div>
+</div>
+
+<!-- NAVBAR 2 -->
+<div class="containerNavBarGeneral">
+    <ul class="navBarGeneral">
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/ReportesPendientes">Reportes Pendientes</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/AdministracionUsuarios">Administración de Usuarios</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/Details?user=@User.Identity.Name">Ver Perfil del Administrador</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/HistorialTrueques/DashBoard">Estadísticas</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="/Administrador/AgregarAdmin">Agregar Administrador</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="@Url.Action("AdministrarCategorias", "Administrador" )">Administrar categorías</a>
+        </li>
+    </ul>
+</div>
+
+<!-- CONTENIDO -->
+<div class="container-fluid h-100">
+    <div class="row pt-4 h-100">
+        <!-- FILTROS -->
+        <div class="col-md-2">
+            <div class="card filtros-usuarios">
+                <div class="card-group-item">
+                    <h4 class="text-center pt-3 pb-3">Filtrar Resultados</h4>
+                    <!-- ORDENAMIENTO -->
+                    <div class="card-header">Ordenar Por</div>
+                    <div class="card-body">
+                        <select id="ordenar-usuarios" class="w-100 form-control">
+                            <option value="0" selected>Por Nombre (Ascendiente)</option>
+                            <option value="1">Por Nombre (Descendiente)</option>
+                            <option value="2">Por Apellido (Ascendiente)</option>
+                            <option value="3">Por Apellido (Descendiente)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="col-md-10 h-90 card-admin">
+            <div class="card h-100">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h4 class="pt-3 pb-4 pl-5">Administración de Usuarios</h4>
+                    </div>
+                    <div class="col-md-3 pt-3 pr-4">
+                        <input type="text" class="form-control" id="filtro-buscar" placeholder="Buscar por Nombre, Apellido o correo" />
+                    </div>
+                </div>
+                <div class="table-reportes">
+                    <div class="reportes-scroll">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Correo</th>
+                                    <th scope="col">País</th>
+                                    <th scope="col">Provincia</th>
+                                    <th scope="col">Cantón</th>
+                                    <th scope="col">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-usuarios">
+                                @foreach (var usuario in ViewBag.usuarios)
+                                {
+                                    <tr data-nombre="@usuario.Nombre" data-apellido="@usuario.Apellido" data-email="@usuario.Email">
+                                        <th scope="row">@usuario.Nombre</th>
+                                        <th scope="row">@usuario.Apellido</th>
+                                        <td><a href="#">@usuario.Email</a></td>
+                                        <td>
+                                            @if (usuario.Pais.Equals(""))
+                                            {
+                                                <i>Sin definir</i>
+                                            }
+                                            else
+                                            {
+                                                <p>@usuario.Pais</p>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (usuario.Provincia_Estado.Equals(""))
+                                            {
+                                                <i>Sin definir</i>
+                                            }
+                                            else
+                                            {
+                                                <p>@usuario.Provincia_Estado</p>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (usuario.Canton_Ciudad.Equals(""))
+                                            {
+                                                <i>Sin definir</i>
+                                            }
+                                            else
+                                            {
+                                                <p>@usuario.Canton_Ciudad</p>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-verde btn-administrar" data-usuario="@usuario.Email">Administrar</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/Scripts/jquery-3.5.1.min.js")
+@Scripts.Render("~/Scripts/jquery-ui.js")
+@Scripts.Render("~/Scripts/Administrador/AdministracionUsuarios.js")

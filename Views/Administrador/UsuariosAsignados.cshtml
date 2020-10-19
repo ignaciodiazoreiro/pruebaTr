@@ -1,0 +1,96 @@
+﻿@model Proyecto_TruequesUCR.Models.Administrador
+
+@{
+    ViewBag.Title = "Agregar Administrador";
+}
+
+@Styles.Render("~/Content/Comerciante/Perfil.css")
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css")
+
+<div class="container-fluid h-100 w-100 d-inline-block">
+    <div class="row justify-content-center w-100">
+        <!-- Contenedor principal -->
+        <div class="col-md-7 mt-5 fondo-blanco h-100">
+            <div class="row">
+                <!-- Barra izquierda -->
+                <div class="col-md-3 fondo-azul p-0 ">
+                    <ul class="nav flex-column nav-perfil">
+                        <li class="nav-item ">
+                            <a href="@Url.Action("Details", "Administrador",new {user=User.Identity.Name })" class="nav-link pt-4 pb-4">Perfil Admin</a>
+                        </li>
+                        <li class="nav-item activo">
+                            <a href="@Url.Action("UsuariosAsignados", "Administrador")" class="nav-link pt-4 pb-4">Mis Usuarios Asignados</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("AgregarAdmin", "Administrador")" class="nav-link pt-4 pb-4">Agregar Administrador</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("DashBoard", "HistorialTrueques")" class="nav-link pt-4 pb-4">Ver estadísticas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("AdministrarCategorias", "Administrador" )" class="nav-link pt-4 pb-4">Administrar categorías</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <!-- Cuerpo de Acción Principal -->
+                <div class="col-md-9">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12 fondo-azul text-center pt-3">
+                            <img src="~/Content/Logo/logoApp.png" alt="Logo de la Aplicación Web" class="foto-vista-admin">
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="row">
+                        <div class="col-md-12 mt-2">
+                            <div>
+                                <table class="table-responsive-md table-borderless w-100 mt-5">
+                                    <tbody>
+
+                                        <!-- Barra de busqueda usuario-->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Buscar usuario específico</th>
+                                            <td class="col-md-9">
+                                                <input id="campoUser" class="form-control" type="text" placeholder="Ingrese el correo electrónico">
+                                            </td>
+                                        </tr>
+                                        <!-- Boton de Buscar más usuario -->
+                                        <tr class="d-flex pt-1 mr-3 mb-3">
+                                            <th class="col-md-3 text-right"></th>
+                                            <td class="col-sm-4">
+                                                <button id="buscar" type="submit" class="btn btn-verde w-100">Buscar usuario</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mb-5">
+                                <h5 class="titulo-sec">Mis usuarios asignados:</h5>
+                                <!--Lista de suarios asignados al admin -->
+                                <ul class="list-group mt-4 item-scroll click">
+                                    @if (@ViewBag.usuarios.Length > 0) 
+                                    {
+                                        for(var i = 0; i < @ViewBag.usuarios.Length; ++i)
+                                        {
+                                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ua" data-email="@ViewBag.usuarios[i]">
+                                        <a href="@Url.Action("OpcionesConComerciante", "Administrador",new { correo= @ViewBag.usuarios[i]})" class="usuario-asignado" id="@ViewBag.usuarios[i]">@ViewBag.usuarios[i]</a>
+                                        <span><img class="logo-vista-reportes" src="~/Content/Images/User.png"></span>
+                                    </li>
+                                        }
+                                }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/Scripts/jquery-3.3.1.min.js");
+@Scripts.Render("~/Scripts/Administrador/UsuariosAsignados.js");

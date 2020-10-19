@@ -1,0 +1,117 @@
+﻿@model Proyecto_TruequesUCR.Models.Administrador
+
+@{
+    ViewBag.Title = "Agregar Administrador";
+}
+
+@Styles.Render("~/Content/Comerciante/Perfil.css")
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css")
+
+<div class="container-fluid h-100 w-100 d-inline-block">
+    <div class="row justify-content-center w-100">
+        <!-- Contenedor principal -->
+        <div class="col-md-7 mt-5 fondo-blanco h-100">
+            <div class="row">
+                <!-- Barra izquierda -->
+                <div class="col-md-3 fondo-azul p-0 ">
+                    <ul class="nav flex-column nav-perfil">
+                        <li class="nav-item ">
+                            <a href="@Url.Action("Details", "Administrador",new {user=User.Identity.Name })" class="nav-link pt-4 pb-4">Perfil Admin</a>
+                        </li>
+                        <li class="nav-item activo">
+                            <a href="@Url.Action("UsuariosAsignados", "Administrador")" class="nav-link pt-4 pb-4">Mis Usuarios Asignados</a>
+                        <li class="nav-item">
+                            <a href="@Url.Action("AgregarAdmin", "Administrador")" class="nav-link pt-4 pb-4">Agregar Administrador</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cuerpo de Acción Principal -->
+                <div class="col-md-9">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12 fondo-azul text-center pt-3">
+                            <img src="~/Content/Logo/logoApp.png" alt="Logo de la Aplicación Web" class="foto-vista-admin">
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class row>
+                        <div class="col-md-12">
+
+                            <!-- Usuario -->
+                            <div>
+                                <table class="table-responsive-md table-borderless w-100 mt-5">
+                                    <tbody>
+
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Usuario</th>
+                                            <td id="user" class="col-md-9">@ViewBag.correo</td>
+                                        </tr>
+
+                                        <!-- Barra de busqueda reporte-->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Buscar reporte específico</th>
+                                            <td class="col-md-9">
+                                                <input class="form-control" type="number" min="0" placeholder="Ingrese el ID del reporte">
+                                            </td>
+                                        </tr>
+                                        <!-- Botones de Buscar y Cargar más reportes -->
+                                        <tr class="d-flex pt-1 mr-3 mb-3">
+                                            <th class="col-md-3 text-right"></th>
+                                            <td class="col-sm-4">
+                                                <button type="submit" class="btn btn-verde w-100">Buscar reporte</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mb-3">
+                                <h5 class="titulo-sec">Lista de reportes del usuario:</h5>
+                                <div class="item-scroll mt-3">
+                                    <!-- Reportes -->
+                                    <table class="table-responsive-md table-bordered table-hover click w-100 mt-0">
+                                        <!--Header-->
+                                        <thead class="fondo-azul">
+                                            <tr>
+                                                <th class="font-weight-lighter" scope="col">ReporteID</th>
+                                                <th class="font-weight-lighter" scope="col">Asunto</th>
+                                                <th class="font-weight-lighter" scope="col">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <!--Reportes-->
+                                        <tbody>
+                                            @if (@ViewBag.denunciasID.Length > 0 && @ViewBag.denunciasAsuntos.Length > 0 && @ViewBag.denunciasEstados.Length > 0)
+                                            {
+                                                for (var i = 0; i < @ViewBag.denunciasID.Length; ++i)
+                                                {
+                                                    <tr>
+
+                                                        <td><a href="@Url.Action("DetalleReporte", "Administrador", new {idDenuncia = @ViewBag.denunciasID[i],correo=ViewBag.correo } )">@ViewBag.denunciasID[i]</a></td>
+                                                        <td><a href="@Url.Action("DetalleReporte", "Administrador", new { idDenuncia = @ViewBag.denunciasID[i],correo=ViewBag.correo } )">@ViewBag.denunciasAsuntos[i]</a></td>
+                                                        <td><a href="@Url.Action("DetalleReporte", "Administrador", new { idDenuncia = @ViewBag.denunciasID[i],correo=ViewBag.correo } )">@ViewBag.denunciasEstados[i]</a></td>
+                                                    </tr>
+                                                }
+                                            }   
+                                            else
+                                            {
+                                                <tr>
+                                                    <td>No hay reportes</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>

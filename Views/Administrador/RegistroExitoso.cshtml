@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Registro Exitoso";
+}
+
+<div class="container-fluid h-100 w-100 d-inline-block mt-5">
+    <div class="row justify-content-center h-100 w-100">
+        <div class="col-md-4 align-self-center">
+            <div class="card">
+                <img src="@Url.Content("~/Content/Images/check-registro.png")" class="card-img-top" alt="Registro Exitoso">
+                <div class="card-body">
+                    <h5 class="card-title">Registro Exitoso!</h5>
+                    <p class="card-text">Se le ha enviado un correo electrónico con las instrucciones para activar su cuenta</p>
+                    <a href="@Url.Action("Details", "Administrador")">Volver a la página principal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
