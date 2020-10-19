@@ -1,0 +1,15 @@
+﻿.containerNavBarGeneral {
+    background-color: lightgray;
+}
+
+.navBarGeneral {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0px;
+    padding: 5px;
+}
+
+.navBarGeneral li {
+    list-style: none;
+    margin-left: 30px;
+}

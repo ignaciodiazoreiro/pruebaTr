@@ -1,0 +1,60 @@
+﻿.botonAgregar {
+    color: #005da4;
+    cursor: pointer;
+}
+
+.btn-outline-success {
+    border-color: #005da4;
+}
+
+    .btn-outline-success:focus {
+        border-color: #005da4;
+    }
+
+    .btn-outline-success:hover {
+        border-color: #005da4;
+    }
+
+.btn-primary {
+    color: white;
+    background-color: #005da4;
+    border-color: #005da4;
+    font-family: 'Myriad Pro';
+}
+
+.btn-success {
+    color: white;
+    background-color: #005da4;
+    border-color: #005da4;
+    font-family: 'Myriad Pro';
+}
+
+    .btn-success:hover {
+        background-color: #0079D6;
+        border-color: #005da4;
+    }
+
+.categoria {
+    cursor: pointer;
+}
+
+    .categoria:hover {
+        text-decoration: underline;
+        color: #6dc067;
+    }
+
+input + label + ul {
+    display: none;
+}
+
+input:checked + label + ul {
+    display: block;
+}
+
+#listaCategorias a {
+    color: #005da4;
+}
+
+ul {
+    list-style: none;
+}

@@ -1,0 +1,72 @@
+﻿@font-face {
+    font-family: Trueno-regular;
+    src: url(fonts/TruenoRg.otf);
+}
+
+html {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+body {
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #E6E6E6;
+    font-family: Trueno-regular;
+}
+
+a {
+    color: #005DA4;
+}
+
+button:focus {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(0, 93, 174, 0.6) !important;
+}
+
+.form-control:focus {
+    border-color: #005DA4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(0, 93, 174, 0.6) !important;
+}
+
+.texto-centrado {
+    text-align: center !important;
+}
+
+.fondo-azul {
+    background-color: #005DA4;
+    color: #FFFFFF;
+}
+
+.btn-verde {
+    background-color: #6DC067;
+    color: #FFFFFF;
+}
+
+    .btn-verde:hover {
+        background-color: #008641;
+        color: #FFFFFF;
+    }
+
+.btn-celeste {
+    background-color: #00C0F3;
+    color: #FFFFFF;
+}
+
+    .btn-celeste:hover {
+        background-color: #80A9BC;
+        color: #FFFFFF;
+    }
+
+.btn-borrar {
+    color: #F37021;
+    border: 1px solid #F37021;
+}
+
+    .btn-borrar:hover {
+        background: #F37021;
+        color: #FFFFFF;
+    }
+
+.icono-mono {
+    font-family: monospace;
+}

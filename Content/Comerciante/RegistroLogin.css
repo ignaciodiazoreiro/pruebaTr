@@ -1,0 +1,35 @@
+﻿.texto-centrado {
+    text-align: center !important;
+}
+
+.fondo-azul {
+    background-color: #005DA4;
+    color: #FFFFFF;
+}
+
+.btn-verde {
+    background-color: #6DC067;
+    color: #FFFFFF;
+}
+
+    .btn-verde:hover {
+        background-color: #008641;
+        color: #FFFFFF;
+    }
+
+.icono-mono {
+    font-family: monospace;
+}
+
+.btn-pos {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 18px;
+}
+
+/*Tareas Brendan
+Vista cambio contraseña
+validar cambio contraseña
+link de vista principal a vista cambiar contraseña
+validar p.o.*/

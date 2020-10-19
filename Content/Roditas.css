@@ -1,0 +1,202 @@
+﻿a {
+    color: #005da4;
+}
+
+ul {
+    list-style: none;
+}
+
+a:hover {
+    color: #005da4;
+}
+
+#agregar {
+    background-color: #005da4;
+    border-color: #005da4;
+}
+
+#agregarItem {
+    padding-top: 10px;
+    background-color: #dee2e6;
+}
+
+#agregarItem select {
+    height: auto;
+    max-height: 50px;
+    overflow-y: hidden;
+    width: 200%;
+}
+
+.border {
+    border-radius: 5px;
+}
+
+.btn-outline-success {
+    border-color: var(--verdeUCR);
+}
+
+.btn-outline-success:focus {
+    border-color: var(--verdeUCR);
+}
+
+.btn-outline-success:hover {
+    border-color: var(--verdeUCR);
+}
+
+.btn-primary {
+    color: white;
+    background-color: var(--verdeUCR);
+    border-color: var(--verdeUCR);
+    font-family: 'Myriad Pro';
+}
+
+.btn-success {
+    color: white;
+    background-color: var(--verdeUCR);
+    border-color: var(--verdeUCR);
+    font-family: 'Myriad Pro';
+}
+
+    .btn-success:hover {
+        background-color: var(--verdeUCR);
+        border-color: var(--verdeUCR);
+    }
+
+.carousel {
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.carousel-indicators .active {
+    background-color: #6dc067;
+}
+
+.center {
+    display: block;
+    box-sizing:content-box;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.containerImagenCreate {
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+#fotosItem {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.indicadoresCarrusel {
+    height: 10px;
+    margin-bottom: 5px;
+}
+
+.indicadoresCarrusel li {
+    border-radius: 50%;
+    background-color: #6dc067;
+    width: 10px;
+    height: 10px;
+}
+
+input + label + ul {
+    display: none;
+}
+
+input:checked + label + ul {
+    display: block;
+}
+
+#containerCarrusel {
+    width: 100%;
+}
+
+.containerImagen {
+    padding-top: 30px;
+    width: 150px;
+    height: 150px;
+}
+
+.col-md-10 {
+    max-width: 100%;
+}
+
+.form-group {
+    padding-right: 15px;
+}
+
+.descripcion {
+    resize: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 1px solid #ced4da;
+    width: 200%;
+}
+
+.labelFoto {
+    color: #005da4;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+    .labelFoto:hover {
+        text-decoration: underline;
+    }
+
+.noMargin {
+    margin: 0;
+}
+
+.itemMaxTamano {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.inputFoto {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.subirImagen {
+    cursor: pointer;
+}
+
+.titulo {
+    width: 200%;
+}
+
+.botonesAgregarCancelar {
+    display: inline-flex;
+    margin-bottom: 15px;
+}
+
+.btn-agregar {
+    margin-right: 5px;
+}
+
+.m-auto {
+    margin-bottom: 15px !important;
+}
+
+.text-danger {
+    color: red !important;
+    margin-left: 15px;
+}
+
+.text-color-azulUCR {
+    color: #005da4;
+}
+
+#page-container {
+    position: relative;
+    min-height: 0vh;
+}
