@@ -1,0 +1,296 @@
+﻿@model Proyecto_TruequesUCR.Models.Perfil
+
+@{
+    ViewBag.Title = "Perfil de " + ViewBag.nombre_completo;
+}
+@Styles.Render("~/Content/Comerciante/Perfil.css")
+
+
+<div class="containerNavBarGeneral">
+    <ul class="navBarGeneral">
+        <li class="navBarGeneralLink"><a href="/Home/Index">Inicio</a></li>
+        <li class="navBarGeneralLink"><a href="/Home/About">Acerca de</a></li>
+        <li class="navBarGeneralLink"><a href="/Home/Contact">Contacto</a></li>
+        @if (Request.IsAuthenticated)
+        {
+            <li class="navBarGeneralLink"><a href="/Items/Index">Mis Items</a></li>
+            <li class="navBarGeneralLink"><a href="/Ofertas/IndexOfertas">Mis ofertas</a></li>
+            <li class="navBarGeneralLink">
+                <a>Mis trueques</a>
+                <ul>
+                    <li><a href="/Trueques/IndexTruequesActivos">Trueques activos</a></li>
+                    <li><a href="/Trueques/IndexTruequesExpirados">Trueques expirados</a></li>
+                    <li><a href="/Trueques/IndexTruequesEliminados">Trueques eliminados</a></li>
+                </ul>
+            </li>
+            <li class="navBarGeneralLink">
+                <a style=" color:black">Recomendaciones</a>
+                <ul>
+                    <li><a href="/Recomendaciones/RecomendacionesPorGustos">Mis gustos</a></li>
+                    <!--<li><a href="">Mi historial de búsqueda</a></li>-->
+                </ul>
+            </li>
+            <li class="navBarGeneralLink"><a href="/Denuncia/Index">Reportar usuario</a></li>
+        }
+    </ul>
+</div>
+<div class="container-fluid h-100 w-100 d-inline-block">
+
+    <div class="row justify-content-center w-100">
+        <!-- Contenedor principal -->
+
+        <div class="col-md-7 mt-5 fondo-blanco h-100">
+            <div class="row">
+                <!-- Barra izquierda -->
+                <div class="col-md-3 fondo-azul p-0">
+                    <!--Vista dueño perfil-->
+                    @if (@ViewBag.dueñoPerfil == true)
+                    {
+                    <ul class="nav flex-column nav-perfil">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link pt-4 pb-4">Artículos Publicados</a>
+                        </li>
+                        <li class="nav-item activo">
+                            <a href="@Url.Action("Details", "Perfil",new {user=Request.Params["user"]})" class="nav-link pt-4 pb-4">Información Personal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Edit", "Perfil")" class="nav-link pt-4 pb-4">Editar Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="misAmix" href="@Url.Action("ListaDeAmigos", "Perfil")" class="nav-link pt-4 pb-4">Mis Amigos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ChangePassword", "Perfil")" class="nav-link pt-4 pb-4">Cambiar Contraseña</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="@Url.Action("Buscar", "Perfil")" class="nav-link pt-4 pb-4">Buscar Usuario</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a id="solicitudes" href="@Url.Action("Index", "SolicitudAmistad", new { correoB = User.Identity.Name })" class="nav-link pt-4 pb-4">Solicitudes de Amistad</a>
+                        </li>
+                    </ul>
+                    }
+                    else
+                    {
+                        <!--Vista visitantes perfil-->
+                <ul class="nav flex-column nav-perfil">
+                    <!-- Enviar solicitud de amistad -->
+                    @if (ViewBag.SolicitudEnviada == false & ViewBag.Amigos == false)
+                    {
+                        <li class="nav-item">
+                            <a href="@Url.Action("GenerarSolicitud", "SolicitudAmistad", new { correoEmisor = User.Identity.Name, correoReceptor = @ViewBag.otroUsuario })" class="nav-link pt-4 pb-4">
+                                Agregar Amigo  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-plus-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7.5-3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+                                    <path fill-rule="evenodd" d="M13 7.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0v-2z" />
+                                </svg>
+                            </a>
+                        </li>
+                    }
+                    <!-- Solicitud enviada -->
+                    @if (ViewBag.SolicitudEnviada == true & ViewBag.Amigos == false)
+                    {
+                        if (ViewBag.emisorSolicitud == true)
+                        {
+                            <li class="nav-item">
+                                <a href="#" class="nav-link pt-4 pb-4 ">
+                                    Solicitud enviada <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("RechazarSolicitud", "SolicitudAmistad", new { correoEmisor = User.Identity.Name, correoReceptor = @ViewBag.otroUsuario, usuarioRechazador = 0 })" class="nav-link pt-4 pb-4 active">
+                                    Cancelar Solicitud <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.146-3.146a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z" />
+                                    </svg>
+                                </a>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a href="@Url.Action("AceptarSolicitud", "SolicitudAmistad", new { correoEmisor = @ViewBag.otroUsuario, correoReceptor = User.Identity.Name, usuarioRechazador = 0 })" class="nav-link pt-4 pb-4 ">
+                                    Aceptar Solicitud <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("RechazarSolicitud", "SolicitudAmistad", new { correoEmisor = @ViewBag.otroUsuario, correoReceptor = User.Identity.Name, usuarioRechazador = 1 })" class="nav-link pt-4 pb-4 active">
+                                    Rechazar solicitud <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.146-3.146a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z" />
+                                    </svg>
+                                </a>
+                            </li>
+
+                        }
+                    }
+                    <!-- Son amigos y Borrar Amigo-->
+                    @if (ViewBag.Amigos == true)
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link pt-4 pb-4 active">
+                                Amigos <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-check-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9.854-2.854a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Delete", "AmigoCon", new { usuarioEliminador = User.Identity.Name, usuarioVictima = @ViewBag.otroUsuario })" class="nav-link pt-4 pb-4">
+                                Eliminar Amigo <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-dash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5-.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z" />
+                                </svg>
+                            </a>
+                        </li>
+                    }
+                    <!-- Regresar-->
+                    <li class="nav-item">
+                        <a href="@Url.Action("Buscar", "Perfil")" class="nav-link pt-4 pb-4">Regresar</a>
+                    </li>
+                </ul>
+
+                    }
+                </div>
+
+                <!-- Cuerpo del Perfil -->
+                <div class="col-md-9">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12 fondo-azul text-center">
+                            <img src=" @Url.Content(ViewBag.foto)" alt="@ViewBag.nombre_completo" class="foto-perfil">
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table-responsive-md table-borderless w-100 mt-5">
+                                <tbody>
+                                    <!-- Nombre Completo -->
+                                    <tr class="d-flex">
+                                        <th class="col-md-3 text-right">Nombre</th>
+                                        <td class="col-md-9">@ViewBag.nombre_completo</td>
+                                    </tr>
+                                    <!-- Dirección -->
+                                    @if (ViewBag.pais != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Fecha de nacimiento</th>
+                                            <td class="col-md-9">@ViewBag.fechaNacimiento</td>
+                                        </tr>
+                                    }
+                                    <!-- Dirección -->
+                                    @if (ViewBag.pais != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">País</th>
+                                            <td class="col-md-9">@ViewBag.pais</td>
+                                        </tr>
+                                    }
+                                    @if (ViewBag.provincia_estado != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Provincia/Estado</th>
+                                            <td class="col-md-9">@ViewBag.provincia_estado</td>
+                                        </tr>
+                                    }
+                                    @if (ViewBag.canton_ciudad != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Cantón/Ciudad</th>
+                                            <td class="col-md-9">@ViewBag.canton_ciudad</td>
+                                        </tr>
+                                    }
+                                    @if (ViewBag.direccion != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Dirección</th>
+                                            <td class="col-md-9">@ViewBag.direccion</td>
+                                        </tr>
+                                    }
+
+                                    <!-- Teléfonos -->
+                                    @if (ViewBag.telefonos.Length > 0)
+                                    {
+                                        for (var i = 0; i < ViewBag.telefonos.Length; i++)
+                                        {
+                                            <tr class="d-flex">
+                                                @if (i == 0)
+                                                {
+                                                    <th class="col-md-3 text-right">Teléfono</th>
+                                                }
+                                                else
+                                                {
+                                                    <th class="col-md-3 text-right"></th>
+                                                }
+                                                <td class="col-md-9">@ViewBag.telefonos[i]</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                    <!-- Correos Electrónicos -->
+                                    @if (ViewBag.correos.Length > 0)
+                                    {
+                                        for (var i = 0; i < ViewBag.correos.Length; i++)
+                                        {
+                                            <tr class="d-flex">
+                                                @if (i == 0)
+                                                {
+                                                    <th class="col-md-3 text-right">Correo Principal</th>
+                                                }
+                                                else if (i == 1)
+                                                {
+                                                    <th class="col-md-3 text-right">Correos Alternativos</th>
+                                                }
+                                                else
+                                                {
+                                                    <th class="col-md-3 text-right"></th>
+                                                }
+                                                <td class="col-md-9">@ViewBag.correos[i]</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                    <!-- Intereses -->
+                                    @if (ViewBag.intereses != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Intereses</th>
+                                            <td class="col-md-9">@ViewBag.intereses</td>
+                                        </tr>
+                                    }
+
+                                    <!-- Categorías preferidas -->
+                                    @if (ViewBag.CategoriasPreferidasUsuario != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Categorías Preferidas</th>
+                                            <td class="col-md-9">@ViewBag.CategoriasPreferidasUsuario</td>
+                                        </tr>
+                                    }
+
+                                    <!-- Hashtags preferidos -->
+                                    @if (ViewBag.EtiquetasPreferidasUsuario != null)
+                                    {
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Hashtags Preferidos</th>
+                                            <td class="col-md-9">@ViewBag.EtiquetasPreferidasUsuario</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/modernizr")
+}

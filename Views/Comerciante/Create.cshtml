@@ -1,0 +1,119 @@
+﻿@model Proyecto_TruequesUCR.Models.Comerciante
+
+@{
+    ViewBag.Title = "Registro";
+
+}
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css");
+<div class="container-fluid h-100 w-100 d-inline-block">
+    <div class="row justify-content-center h-100 w-100">
+        <div class="col-md-4 align-self-center">
+            <div class="card">
+                <!-- Card Header -->
+                <div class="card-header fondo-azul texto-centrado">
+                    <h1>Registro</h1>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Correo Electrónico -->
+                        <div class="form-row mb-3">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text icono-mono">@@</span>
+                                    </div>
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Correo Electrónico" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <!-- Nombre y Apellido -->
+                        <div class="form-row mb-3">
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @placeholder = "Nombre" } })
+                                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Apellido, new { htmlAttributes = new { @class = "form-control", @placeholder = "Apellido(s)" } })
+                                @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div class="form-row mb-3">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text icono-mono">*</span>
+                                    </div>
+
+                                    @Html.EditorFor(model => model.Usuario.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Contraseña", @type = "password" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Usuario.Password, "", new { @class = "text-danger" })
+                                <small id="passwordHelp" class="form-text text-muted">
+                                    ´
+                                    La contraseña debe tener mínimo 8 caracteres, al menos un caracter especial (Ej: . _ -) y al menos un número.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Confirmar Contraseña -->
+                        <div class="form-row mb-3">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text icono-mono">*</span>
+                                    </div>
+                                    @Html.EditorFor(model => model.Usuario.Confirmacion, new { htmlAttributes = new { @class = "form-control", @placeholder = "Confirmación de Contraseña" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Usuario.Confirmacion, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+
+                        <!-- Idioma y Zona -->
+                        <div class="form-row mb-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text icono-mono">*</span>
+                                    </div>
+                                    @Html.DropDownListFor(m => m.Usuario.Idioma, new SelectList(ViewBag.Idiomas), new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Usuario.Idioma, "", new { @class = "text-danger" })
+                                </div>
+                                </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text icono-mono">*</span>
+                                    </div>
+                                    @Html.DropDownListFor(m => m.Usuario.ZonaHoraria, new SelectList(ViewBag.Zonas), new { htmlAttributes = new { @class = "form-control" } })
+
+                                    @Html.ValidationMessageFor(model => model.Usuario.ZonaHoraria, "", new { @class = "text-danger" })
+                                </div>
+                                </div>
+                            </div>
+                        
+                        <!-- Botón de registrar -->
+                        <div class="form-row mb-3 justify-content-center">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-verde w-100">Registrarme</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+}

@@ -1,0 +1,355 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Item>
+
+@{
+    ViewBag.Title = "DetalleEnvio";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    @{
+        Proyecto_TruequesUCR.Models.Trueques Trueque = ViewBag.Trueque;
+        Proyecto_TruequesUCR.Models.Ofertas Oferta = null;
+        if (Trueque != null)
+        {
+            Oferta = Trueque.Ofertas1;
+        }
+
+        Proyecto_TruequesUCR.Models.Ofertas OfertaPrimera = ViewBag.OfertaPrimera;
+        Proyecto_TruequesUCR.Models.Ofertas OfertaSegunda = null;
+        if ((OfertaPrimera != null && Trueque == null) || (Trueque != null && Trueque.Tipo == "Circular"))
+        {
+            if (OfertaPrimera != null && OfertaPrimera.OfertaDC.OfertaDC2 == null)
+            {
+                OfertaSegunda = OfertaPrimera;
+                OfertaPrimera = OfertaSegunda.OfertaDC.OfertaDC1.FirstOrDefault().Ofertas;
+            }
+            else if (OfertaPrimera != null)
+            {
+                OfertaSegunda = OfertaPrimera.OfertaDC.OfertaDC2.Ofertas;
+            }
+        }
+
+        string PrimerNombreTrueque = "";
+        string PrimerNombreOferta = "";
+        string PrimerNombreOfertaPrimera = "";
+        string PrimerNombreOfertaSegunda = "";
+        string EmailCreador = "";
+        if (Trueque != null)
+        {
+            EmailCreador = Trueque.Item.First().Email_Comerciante;
+        }
+        int index = 1;
+        var usuario = User.Identity.Name;
+
+        <nav aria-label="breadcrumb" id="breadcrumb-1">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="~/Home/Index">
+                        <img src="~/Content/Images/home.png" width="25" height="25" />
+                    </a>
+                </li>
+                @if (ViewBag.AceptoTrueque && usuario == EmailCreador)
+                {
+                    if (ViewBag.Predecesor == "activos")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesActivos">Mis trueques activos</a></li>
+                    }
+                    else if (ViewBag.Predecesor == "expirados")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesExpirados">Mis trueques expirados</a></li>
+                    }
+                }
+                else
+                {
+                    if (ViewBag.Predecesor == "item")
+                    {
+                        <li class="breadcrumb-item">Detalles del ítem</li>
+                    }
+                    else if (ViewBag.Predecesor == "oferta")
+                    {
+                        <li class="breadcrumb-item"><a href="/Ofertas/IndexOfertas">Mis ofertas</a></li>
+                        <li class="breadcrumb-item"><a href=@Url.Action("DetalleOferta", "Ofertas", new { id = ViewBag.IdPredecesor, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdDelTrueque })>Detalles de la oferta</a></li>
+                    }
+                }
+                <li class="breadcrumb-item">Detalles del trueque</li>
+            </ol>
+        </nav>
+
+        <div class="container text-center" id="select">
+
+            <div class="row" style="padding-top: 30px" align="center">
+
+                <div class="col-md">
+                    <h2 style="padding-bottom: 15px">
+                        <strong>Detalles de envío</strong>
+                    </h2>
+                </div>
+
+            </div>
+
+            <div class="row" style="padding-top: 15px" align="center">
+
+                <div class="col-lg" align="center">
+                    <strong align="center">Envíos físicos</strong>
+                    <br />
+                    Los siguientes ítems involucrados en el intercambio son físicos: <br /> <br />
+
+                    @if (ViewBag.AceptoTrueque) // si es el caso de trueque acepta oferta o viceversa
+                    {
+                        if (Trueque.IdOfertaAceptada != null)
+                        {
+                            PrimerNombreTrueque = Trueque.Item.First().Comerciante.Nombre;
+                            foreach (var item in Trueque.Item)
+                            {
+                                if (item.Tipo == "Físico") // se asume que item.Tipo es físico o digital
+                                {
+                                    @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreTrueque)
+                                    <br />
+                                }
+                            }
+                        }
+
+                        if (Trueque.Ofertas1 != null) // se asume que Ofertas1 es la oferta aceptada
+                        {
+                            if (Trueque.Ofertas1.OfertaDC != null)
+                            {
+                                PrimerNombreOferta = Trueque.Ofertas1.OfertaDC.Item.First().Comerciante.Nombre;
+                                foreach (var item in Trueque.Ofertas1.OfertaDC.Item)
+                                {
+                                    if (item.Tipo == "Físico") // se asume que item.Tipo es físico o digital
+                                    {
+                                        @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreOferta)
+                                        <br />
+                                    }
+                                }
+                            }
+                            /*else if (Trueque.Ofertas1.OfertaSubasta != null)
+                            {
+                                PrimerNombreOferta = Trueque.Ofertas1.OfertaSubasta.Comerciante.Nombre;
+                                @:@(index++). [Dinero] @Trueque.Ofertas1.OfertaSubasta.TipoMoneda @Trueque.Ofertas1.OfertaSubasta.Monto.ToString("F") (de @PrimerNombreOferta)
+                                <br />
+                            }*/
+                        }
+
+                        index = 1;
+                    }
+                    else // si es el caso de oferta acepta oferta o viceversa
+                    {
+                        if (OfertaPrimera != null)
+                        {
+                            foreach (var item in OfertaPrimera.OfertaDC.Item)
+                            {
+                                PrimerNombreOfertaPrimera = item.Comerciante.Nombre;
+                                if (item.Tipo == "Físico") // se asume que item.Tipo es físico o digital
+                                {
+                                    @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreOfertaPrimera)
+                                    <br />
+                                }
+                            }
+                        }
+
+                        if (OfertaSegunda != null) // se asume que Ofertas1 es la oferta aceptada
+                        {
+                            foreach (var item in OfertaSegunda.OfertaDC.Item)
+                            {
+                                PrimerNombreOfertaSegunda = item.Comerciante.Nombre;
+                                if (item.Tipo == "Físico") // se asume que item.Tipo es físico o digital
+                                {
+                                    @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreOfertaSegunda)
+                                    <br />
+                                }
+                            }
+                        }
+
+                        index = 1;
+                    }
+                </div>
+
+                <div class="col-lg" align="center">
+                    <strong align="center">Envíos digitales</strong>
+                    <br />
+                    Los siguientes ítems involucrados en el intercambio son digitales: <br /> <br />
+
+                    @if (ViewBag.AceptoTrueque) // si es el caso de trueque acepta oferta o viceversa
+                    {
+                        if (Trueque.IdOfertaAceptada != null)
+                        {
+                            PrimerNombreTrueque = Trueque.Item.First().Comerciante.Nombre;
+                            foreach (var item in Trueque.Item)
+                            {
+                                if (item.Tipo == "Digital") // se asume que item.Tipo es físico o digital
+                                {
+                                    @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo  (de @PrimerNombreTrueque)
+                                    <br />
+                                }
+                            }
+                        }
+
+                        if (Trueque.Ofertas1 != null) // se asume que Ofertas1 es la oferta aceptada
+                        {
+                            if (Trueque.Ofertas1.OfertaDC != null)
+                            {
+                                PrimerNombreOferta = Trueque.Ofertas1.OfertaDC.Item.First().Comerciante.Nombre;
+                                foreach (var item in Trueque.Ofertas1.OfertaDC.Item)
+                                {
+                                    if (item.Tipo == "Digital") // se asume que item.Tipo es físico o digital
+                                    {
+                                        @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreOferta)
+                                        <br />
+                                    }
+                                }
+                            }
+                            else if (Trueque.Ofertas1.OfertaSubasta != null)
+                            {
+                                PrimerNombreOferta = Trueque.Ofertas1.OfertaSubasta.Comerciante.Nombre;
+                                @:@(index++). [Dinero] @Trueque.Ofertas1.OfertaSubasta.TipoMoneda @Trueque.Ofertas1.OfertaSubasta.Monto.ToString("F") (de @PrimerNombreOferta)
+                                <br />
+                            }
+                        }
+
+                        index = 1;
+                    }
+                    else // si es el caso de oferta acepta oferta o viceversa
+                    {
+                        if (ViewBag.OfertaPrimera != null)
+                        {
+                            foreach (var item in ViewBag.OfertaPrimera.OfertaDC.Item)
+                            {
+                                if (item.Tipo == "Digital") // se asume que item.Tipo es físico o digital
+                                {
+                                    PrimerNombreOfertaPrimera = item.Comerciante.Nombre;
+                                    @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreOfertaPrimera)
+                                    <br />
+                                }
+                            }
+                        }
+
+                        if (ViewBag.OfertaSegunda != null) // se asume que Ofertas1 es la oferta aceptada
+                        {
+                            foreach (var item in ViewBag.OfertaPrimera.OfertaDC.Item)
+                            {
+                                if (item.Tipo == "Digital") // se asume que item.Tipo es físico o digital
+                                {
+                                    PrimerNombreOfertaSegunda = item.Comerciante.Nombre;
+                                    @:@(index++). [@item.Nombre_Categoria_Item] @item.Titulo (de @PrimerNombreOfertaSegunda)
+                                    <br />
+                                }
+                            }
+                        }
+
+                        index = 1;
+                    }
+
+                </div>
+
+            </div>
+
+            <div class="row" style="padding-top: 60px" align="center">
+                <div class="col-lg" align="center">
+                    @if (ViewBag.AceptoTrueque)
+                    {
+                        @: Método de envío físico: <strong>@Trueque.MetodoFisico</strong>
+                    }
+                    else if (OfertaPrimera != null && OfertaPrimera.OfertaDC.MetodoFisico != null)
+                    {
+                        @: Método de envío físico: <strong>@OfertaPrimera.OfertaDC.MetodoFisico</strong>
+                    }
+                </div>
+
+                <div class="col-lg" align="center">
+                    @if (ViewBag.AceptoTrueque)
+                    {
+                        @: Método de envío digital: <strong>@Trueque.MetodoDigital</strong>
+                    }
+                    else if (OfertaPrimera != null && OfertaPrimera.OfertaDC.MetodoDigital != null)
+                    {
+                        @: Método de envío digital: <strong>@OfertaPrimera.OfertaDC.MetodoDigital</strong>
+                    }
+                </div>
+            </div>
+
+            <div class="row" style="padding-top: 60px" align="center">
+
+                <div class="col-lg" align="center">
+                    @if (ViewBag.AceptoTrueque)
+                    {
+                        @: Detalles indicados: <strong>@Trueque.DetalleFisico</strong>
+                    }
+                    else if (OfertaPrimera != null && OfertaPrimera.OfertaDC.MetodoFisico != null)
+                    {
+                        @: Detalles indicados: <strong>@OfertaPrimera.OfertaDC.DetalleFisico</strong>
+                    }
+                </div>
+
+                <div class="col-lg" align="center">
+                    @if (ViewBag.AceptoTrueque)
+                    {
+                        @: Detalles indicados: <strong>@Trueque.DetalleDigital</strong>
+                    }
+                    else if (OfertaPrimera != null && OfertaPrimera.OfertaDC.MetodoDigital != null)
+                    {
+                        @: Detalles indicados: <strong>@OfertaPrimera.OfertaDC.DetalleDigital</strong>
+                    }
+                </div>
+
+            </div>
+
+            <div class="row" style="padding-top: 60px">
+
+                <div class="col-lg-12">
+
+                    @{
+                        if (ViewBag.AceptoTrueque)
+                        {
+                            if (Trueque.UltimoEditor != null && Trueque.UltimoEditor == usuario)
+                            {
+                                <button type="button" class="btn btn-disabled">Aceptar envío</button>
+                                <button type="button" class="btn btn-disabled">Modificar propuesta</button>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Aceptar envío", "DetalleTrueque", "Trueques", new { id = Trueque.IdTrueque, predecesor = "activos" }, new { @id = "aceptarEnvio", @class = "btn btn-primary", @onclick = "aceptarEnvios(" + Trueque.IdTrueque.ToString() + ", true)" })
+                                @Html.ActionLink("Modificar propuesta", "EditarEnvio", "Ofertas", new { IdTrueque = Trueque.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @class = "btn btn-secondary" })
+                            }
+
+                        }
+                        else
+                        {
+                            if (OfertaPrimera.OfertaDC.UltimoEditor != null && OfertaPrimera.OfertaDC.UltimoEditor == usuario)
+                            {
+                                <button type="button" class="btn btn-disabled">Aceptar envío</button>
+                                <button type="button" class="btn btn-disabled">Modificar propuesta</button>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Aceptar envío", "DetalleOferta", "Ofertas", new { id = OfertaPrimera.Id, predecesor = "oferta" }, new { @id = "aceptarEnvio", @class = "btn btn-primary", @onclick = "aceptarEnvios(" + OfertaPrimera.Id.ToString() + ", false)" })
+                                @Html.ActionLink("Modificar propuesta", "EditarEnvio", "Ofertas", new { IdOferta = OfertaPrimera.Id, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = false }, new { @class = "btn btn-secondary" })
+                            }
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+    <script src="~/Scripts/ConfirmarEnvios.js"></script>
+
+</body>
+</html>

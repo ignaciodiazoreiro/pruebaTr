@@ -1,0 +1,309 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Ofertas>
+
+@{
+    ViewBag.Title = "AceptarOferta";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    @foreach (var oferta in Model)
+    {
+        if (ViewBag.IdOferta == oferta.Id)
+        {
+            var tipo = oferta.Trueques.Tipo;
+
+            <nav aria-label="breadcrumb" id="breadcrumb-1">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="~/Home/Index">
+                            <img src="~/Content/Images/home.png" width="25" height="25" />
+                        </a>
+                    </li>
+
+                    @if (ViewBag.Predecesor == "activos")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesActivos">Mis trueques activos</a></li>
+                    }
+                    else if (ViewBag.Predecesor == "expirados")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesExpirados">Mis trueques expirados</a></li>
+                    }
+                    else if (ViewBag.Predecesor == "item")
+                    {
+                        <li class="breadcrumb-item">Detalles del ítem</li>
+                    }
+
+                    <li class="breadcrumb-item"><a href=@Url.Action("DetalleTrueque", "Trueques", new { id = oferta.IdTrueque, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor })>Detalles del trueque</a></li>
+                    <li class="breadcrumb-item"><a href=@Url.Action("DetalleOferta", "Ofertas", new { id = oferta.Id, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor })>Detalles de la oferta</a></li>
+                    <li class="breadcrumb-item">Aceptar oferta</li>
+                </ol>
+            </nav>
+
+            <div class="container text-center" id="titleMisOfertas" style="padding-top: 30px">
+                <h2>
+                    <strong>Confirmar trueque</strong>
+                </h2>
+            </div>
+
+            <div class="container text-center" id="select">
+
+                @if (!ViewBag.AceptoTrueque) // caso oferta acepta oferta
+                {
+                    <div class="row" style="padding-top:100px">
+
+                        @if (ViewBag.OfertaSegunda == null)
+                        {
+                            <div class="col-md">
+                                @{
+                                    var trueque = oferta.Trueques;
+                                    byte[] foto = null;
+
+                                    if (trueque.Item.First().Fotos.Count() != 0)
+                                    {
+                                        foto = trueque.Item.First().Fotos.First().Foto;
+                                    }
+
+                                    if (foto != null)
+                                    {
+                                        String img64 = Convert.ToBase64String(foto);
+                                        String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                        <img src="@img64Url" width="200" class="align-self-center" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Images/fotoPredeterminada.png" width="200" class="align-self-center" />
+                                    }
+                                }
+                            </div>
+
+                            <div class="col-md">
+                                <strong>Usted</strong> ofrece: <br>
+                                @foreach (var item in trueque.Item)
+                                {
+                                    @:[@item.Nombre_Categoria_Item] @item.Titulo <br>
+                                }
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="col-md">
+                                @{
+                                    byte[] foto = null;
+
+                                    Proyecto_TruequesUCR.Models.OfertaDC OfertaDos = ViewBag.OfertaSegunda;
+                                    if (OfertaDos.Item.First().Fotos.Count() != 0)
+                                    {
+                                        foto = OfertaDos.Item.First().Fotos.First().Foto;
+                                    }
+
+                                    if (foto != null)
+                                    {
+                                        String img64 = Convert.ToBase64String(foto);
+                                        String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                        <img src="@img64Url" width="200" class="align-self-center" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Images/fotoPredeterminada.png" width="200" class="align-self-center" />
+                                    }
+                                }
+                            </div>
+
+                            <div class="col-md">
+                                <strong>Usted</strong> ofrece: <br>
+                                @foreach (var item in ViewBag.OfertaSegunda.Item)
+                                {
+                                    @:[@item.Nombre_Categoria_Item] @item.Titulo <br>
+                                }
+                            </div>
+                        }
+
+                        <div class="col-md" style="display:flex;align-items:center;justify-content:center">
+                            <img src="~/Content/Images/Trueque directo.png" width="75" height="75" class="align-self-center" />
+                        </div>
+
+                        <div class="col-md">
+                            @if (tipo != "Subasta") // si es trueque directo o circular
+                            {
+                                @:<strong>@oferta.OfertaDC.Item.First().Comerciante.Nombre @oferta.OfertaDC.Item.First().Comerciante.Apellido</strong> ofrece: <br>
+                                foreach (var item in oferta.OfertaDC.Item)
+                                {
+                                    @:[@item.Nombre_Categoria_Item] @item.Titulo <br>
+                                }
+                            }
+                            else  // si es subasta
+                            {
+                                @:<strong>@oferta.OfertaSubasta.Comerciante.Nombre @oferta.OfertaSubasta.Comerciante.Apellido</strong> ofrece: <br>
+                                <p>@oferta.OfertaSubasta.TipoMoneda @oferta.OfertaSubasta.Monto</p>
+                            }
+                        </div>
+
+                        <div class="col-md">
+
+                            @if (tipo != "Subasta") // si es trueque directo o circular
+                            {
+                                byte[] foto = null;
+
+                                if (oferta.OfertaDC.Item.First().Fotos.Count() != 0)
+                                {
+                                    foto = oferta.OfertaDC.Item.First().Fotos.First().Foto;
+                                }
+
+                                if (foto != null)
+                                {
+                                    String img64 = Convert.ToBase64String(foto);
+                                    String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                    <img src="@img64Url" width="200" class="align-self-center" />
+                                }
+                                else
+                                {
+                                    <img src="~/Content/Images/fotoPredeterminada.png" width="200" class="align-self-center" />
+                                }
+                            }
+                            else // si es subasta
+                            {
+                                <img src="~/Content/Images/Subasta.png" width="200" class="align-self-center" />
+                            }
+
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="row" style="padding-top:100px">
+
+                        <div class="col-md">
+
+                            @if (tipo != "Subasta") // si es trueque directo o circular
+                            {
+                                byte[] foto2 = null;
+
+                                if (oferta.OfertaDC.Item.First().Fotos.Count() != 0)
+                                {
+                                    foto2 = oferta.OfertaDC.Item.First().Fotos.First().Foto;
+                                }
+
+                                if (foto2 != null)
+                                {
+                                    String img64 = Convert.ToBase64String(foto2);
+                                    String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                    <img src="@img64Url" width="200" class="align-self-center" />
+                                }
+                                else
+                                {
+                                    <img src="~/Content/Images/fotoPredeterminada.png" width="200" class="align-self-center" />
+                                }
+                            }
+                            else // si es subasta
+                            {
+                                <img src="~/Content/Images/Subasta.png" width="200" class="align-self-center" />
+                            }
+
+                        </div>
+
+                        <div class="col-md">
+                            @if (tipo != "Subasta") // si es trueque directo o circular
+                            {
+                                @:<strong>Usted</strong> ofrece: <br>
+                                foreach (var item in oferta.OfertaDC.Item)
+                                {
+                                    @:[@item.Nombre_Categoria_Item] @item.Titulo <br>
+                                }
+                            }
+                            else  // si es subasta
+                            {
+                                @:<strong>Usted</strong> ofrece: <br>
+                                <p>@oferta.OfertaSubasta.TipoMoneda @oferta.OfertaSubasta.Monto.ToString("F")</p>
+                            }
+                        </div>
+
+                        <div class="col-md" style="display:flex;align-items:center;justify-content:center">
+                            <img src="~/Content/Images/Trueque directo.png" width="75" height="75" class="align-self-center" />
+                        </div>
+
+                        <div class="col-md">
+                            @{
+                                var trueque2 = oferta.Trueques;
+
+                                @:<strong>@trueque2.Item.First().Comerciante.Nombre @trueque2.Item.First().Comerciante.Apellido</strong> ofrece: <br>
+
+                                foreach (var item in trueque2.Item)
+                                {
+                                    @:[@item.Nombre_Categoria_Item] @item.Titulo <br>
+                                }
+                            }
+                        </div>
+
+                        <div class="col-md">
+                            @{
+                                byte[] foto = null;
+
+                                if (trueque2.Item.First().Fotos.Count() != 0)
+                                {
+                                    foto = trueque2.Item.First().Fotos.First().Foto;
+                                }
+
+                                if (foto != null)
+                                {
+                                    String img64 = Convert.ToBase64String(foto);
+                                    String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                    <img src="@img64Url" width="200" class="align-self-center" />
+                                }
+                                else
+                                {
+                                    <img src="~/Content/Images/fotoPredeterminada.png" width="200" class="align-self-center" />
+                                }
+                            }
+                        </div>
+
+                    </div>
+
+                }
+
+                <div class="row" style="padding-top: 100px">
+                    <div class="col-sm">
+                        <div class="button" style="position:center">
+                            @if (ViewBag.AceptoTrueque)
+                            {
+                                var id = "IdTrueque," + oferta.IdTrueque.ToString()+ "," + (ViewBag.Predecesor == null ? "null" : ViewBag.Predecesor) + ",true," + (ViewBag.IdOferta == null ? "null" : ViewBag.IdOferta);
+                                <input type="hidden" id="idTipo" value="@(id)">
+                                <a class="btn btn-primary" id="confirmarTrueque">Confirmar</a>
+                                @Html.ActionLink("Atrás", "DetalleTrueque", "Trueques", new { id = ViewBag.IdPredecesor, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdOferta }, new { @class = "btn btn-secondary" })
+                            }
+                            else
+                            {
+                                var id = "IdOferta," + oferta.Id.ToString()+ "," + (ViewBag.Predecesor == null ? "null" : ViewBag.Predecesor)  + ",false," + (ViewBag.OfertaSegunda == null ? "null" : ViewBag.OfertaSegunda.Ofertas.Id);
+                                <input type="hidden" id="idTipo" value="@(id)">
+                                <a class="btn btn-primary" id="confirmarTrueque">Confirmar</a>
+                                @Html.ActionLink("Atrás", "DetalleOferta", "Ofertas", new { id = ViewBag.IdOferta, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor }, new { @class = "btn btn-secondary" })
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            break;
+        }
+    }
+
+    <script src="~/Scripts/setIdAceptado.js"></script>
+
+</body>
+</html>

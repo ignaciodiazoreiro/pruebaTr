@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "ReestablecerExitoso";
+}
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css")
+    <div class="container-fluid h-100 w-100 d-inline-block mt-5">
+        <div class="row justify-content-center h-100 w-100">
+            <div class="col-md-4 align-self-center">
+                <div class="card">
+                    <div class="card-header fondo-azul texto-centrado">
+                        <h4>¡Se ha enviado un correo electrónico!</h4>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <!-- Contraseña -->
+                            <div class="form-row mb-3">
+                                <div class="col-md-12">
+                                    <p>
+                                        Te hemos envíado un correo electronico a tu dirección con una nueva contraseña,
+                                        podras usar esta para iniciar sesión en la página. Una vez hecho esto si deseas puedes
+                                        cambiar la contraseña por una nueva desde tu perfil, en la opción de <span class="texto-resaltado">cambiar contraseña</span>.
+                                        Si no te ha llegado en unos minutos comprueba que has usado la dirección de correo electrónico asociada a la cuenta
+                                        de trueques@UCR e intentalo nuevamente.
+                                    </p>
+                                    <div class="form-row mb-3 justify-content-center">
+                                        <div class="col-md-6">
+                                            @Html.ActionLink("Iniciar Sesion", "Login", "Comerciante", null, new { @class = "btn btn-verde w-100" })
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+

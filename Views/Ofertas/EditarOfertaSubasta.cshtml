@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Item>
+
+@{
+    ViewBag.Title = "EditarOfertaSubasta";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    <nav aria-label="breadcrumb" id="breadcrumb-1">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/Home/Index">
+                    <img src="~/Content/Images/home.png" width="25" height="25" />
+                </a>
+            </li>
+            <li class="breadcrumb-item">Editar oferta</</li>
+        </ol>
+    </nav>
+
+    <div class="container text-center" id="titleEditarOferta" style="padding-top: 30px">
+        <h2>
+            <strong>Editar oferta</strong>
+        </h2>
+
+        <h3 style="padding-top: 150px">
+            <strong>Digite el monto que desea ofertar:</strong>
+        </h3>
+    </div>
+
+    <div class="container text-center" id="select" style="padding-bottom: 20px; padding-top: 50px">
+        <form name="datos">
+            <div class="col-md-6 col-md-12" id="monto">
+                <select id="tipoMoneda">
+                    <option value="TipoSubasta" selected>@ViewBag.TipoMoneda</option>
+                </select>
+                <input type="number" id="montoOferta" step="any" size="30" min="@ViewBag.MontoMinimo" value="@ViewBag.Monto" required>
+            </div>
+        </form>
+
+        <div class="row" style="padding-top: 20px">
+            <div class="col-sm">
+                <div class="button" style="position:center; padding-top: 100px">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmEditOferta">Enviar oferta</button>
+                    @Html.ActionLink("Atrás", "DetalleTrueque", "Trueques", new { id = ViewBag.IdOferta }, new { @class = "btn btn-secondary" })
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confirmEditOferta" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Está seguro que desea editar la oferta? Si hace esto, se notificará al truequeador.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" onclick="DireccionarOfertas(@ViewBag.IdOferta)">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editOfertaSuccess" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><strong>¡Su oferta ha sido editada!</strong></h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Cambios guardados con éxito
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        @Html.ActionLink("Aceptar", "DetalleTrueque", "Trueques", new { id = ViewBag.IdTrueque }, new { @class = "btn btn-primary" })
+                        <input type="hidden" id="tipoOferta" value="Edit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/Ofertas.js"></script>
+
+</body>
+</html>

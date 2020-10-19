@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Trueques>
+
+@{
+    ViewBag.Title = "ConfirmActivar";
+}
+
+<!-- Esta vista es una notificacion que confirma al usuario que su trueque se elimino. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    <!-- Miga de pan. -->
+    <nav aria-label="breadcrumb" id="breadcrumb-1">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/Home/Index">
+                    <img src="~/Content/Images/home.png" width="25" height="25" />
+                </a>
+            </li>
+            <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesEliminados">Mis trueques eliminados</a></li>
+            <li class="breadcrumb-item">Activar trueque</</li>
+        </ol>
+    </nav>
+
+    @if (ViewBag.Activable == "activo")
+    {
+        <!-- Texto de la notificacion. -->
+        <div class="container text-center" id="titleMisTrueques" style="padding-top: 150px; padding-bottom:100px">
+            <h3>
+                <strong>¡Su trueque ha sido activado exitosamente!</strong>
+            </h3>
+            <p>
+                Este trueque se encuentra ahora en su lista de trueques activos.
+                Si lo desea, puede ir ahora a dicha lista.
+            </p>
+        </div>
+
+        <!-- Boton para direccionar a Mis trueques. -->
+        <div class="container text-center" style="padding-top: 30px; padding-bottom: 50px">
+            <div class="button">
+                @Html.ActionLink("Ir a Mis trueques activos", "IndexTruequesActivos", "Trueques", null, new { @class = "btn btn-success" })
+            </div>
+        </div>
+    }
+    else if (ViewBag.Activable == "expirado")
+    {
+        <!-- Texto de la notificacion. -->
+        <div class="container text-center" id="titleMisTrueques" style="padding-top: 150px; padding-bottom:100px">
+            <h3>
+                <strong>¡Su trueque ha sido activado exitosamente!</strong>
+            </h3>
+            <p>
+                Este trueque tenía una fecha de expiración antigua, por lo que se ha colocado en Mis trueques expirados.
+                Desde ahí puede editar su trueque para cambiar la expiración por una fecha futura.
+                Si lo desea, puede ir ahora a dicha lista.
+            </p>
+        </div>
+
+        <!-- Boton para direccionar a Mis trueques. -->
+        <div class="container text-center" style="padding-top: 30px; padding-bottom: 50px">
+            <div class="button">
+                @Html.ActionLink("Ir a Mis trueques expirados", "IndexTruequesExpirados", "Trueques", null, new { @class = "btn btn-success" })
+            </div>
+        </div>
+    }
+    else if (ViewBag.Activable == "fail")
+    {
+        <!-- Texto de la notificacion. -->
+        <div class="container text-center" id="titleMisTrueques" style="padding-top: 150px; padding-bottom:100px">
+            <h3>
+                <strong>¡Su trueque no se ha podido activar!</strong>
+            </h3>
+            <p>
+                Probablemente su trueque tiene ítems que están ahora en otros trueques activos o expirados.
+                Si aún desea activar este trueque, elimine los trueques activos o expirados que contengan ítems de este trueque.
+            </p>
+        </div>
+
+        <!-- Boton para direccionar a Mis trueques. -->
+        <div class="container text-center" style="padding-top: 30px; padding-bottom: 50px">
+            <div class="button">
+                @Html.ActionLink("Volver a Mis trueques eliminados", "IndexTruequesEliminados", "Trueques", null, new { @class = "btn btn-success" })
+            </div>
+        </div>
+    }
+
+</body>
+</html>

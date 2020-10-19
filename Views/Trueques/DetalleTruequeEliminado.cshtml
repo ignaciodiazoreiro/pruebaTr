@@ -1,0 +1,185 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Trueques>
+
+@{
+    ViewBag.Title = "DetalleTruequeEliminado";
+}
+
+<!--
+    Actividad supervisada #4
+    Ignacio Arroyo Montoya
+    Fecha: 26-05-2020
+    Backlog Id por implementar: TT-AT12
+    Se va a realizar una implmentación de la historia antes mencionada con respecto a las tareeas tecnicas
+    que se lleguen a acordar con el PO y los Stakeholders. En esta historia, en grandres razgos, se implementa
+    la funcionalidad de mostrar los items que se encuentran en cada uno de los trueques.
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    <nav aria-label="breadcrumb" id="breadcrumb-1">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/Home/Index">
+                    <img src="~/Content/Images/home.png" width="25" height="25" />
+                </a>
+            </li>
+            <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesEliminados">Mis trueques eliminados</a></li>
+            <li class="breadcrumb-item">Detalles del trueque</</li>
+        </ol>
+    </nav>
+
+    <div class="container text-center" id="select">
+
+        @{
+            string TipoTrueque = "";
+            string NombreCompleto = "";
+            string DetallesTrueque = "";
+            string FechaInicio = "";
+            string FechaFinal = "";
+            decimal MontoMinimo = 0;
+            string FechaCreacion = "";
+            Proyecto_TruequesUCR.Models.Trueques truequeActual = null;
+
+            foreach (var trueque in Model)
+            {
+                // Se verifica si el id del item actual coresponde al mismo que se pasó
+                // en los parametros al momento de que se llamo a esta vista
+                if (trueque.IdTrueque == ViewBag.IdDelTrueque)
+                {
+                    truequeActual = trueque;
+                    var algunItem = trueque.HistorialTrueques.First();
+        
+                    NombreCompleto = algunItem.Item.Comerciante.Nombre + " " + algunItem.Item.Comerciante.Apellido;
+                    if (trueque.Tipo == "Directo")
+                    {
+                        TipoTrueque = "Trueque directo";
+                    }
+                    else if (trueque.Tipo == "Circular")
+                    {
+                        TipoTrueque = "Trueque circular";
+                    }
+                    else if (trueque.Tipo == "Subasta")
+                    {
+                        TipoTrueque = "Subasta";
+                        MontoMinimo = (decimal)trueque.Subasta.Monto;
+                        MontoMinimo = decimal.Parse(MontoMinimo.ToString("F"));
+                    }
+
+                    DateTime fechaI = (DateTime)trueque.FechaInicio;
+                    DateTime fechaF = (DateTime)trueque.FechaFinal;
+                    DateTime fechaC = (DateTime)trueque.FechaCreacion;
+
+                    FechaInicio = fechaI.ToString("dd'/'MM'/'yyyy");
+                    FechaFinal = fechaF.ToString("dd'/'MM'/'yyyy");
+                    FechaCreacion = fechaC.ToString("dd'/'MM'/'yyyy");
+
+                    DetallesTrueque = trueque.Descripcion;
+
+                }
+            }
+
+            <div class="row" style="padding-top: 30px" align="center">
+                <div class="col-md">
+                    <h2 style="padding-bottom: 30px">
+                        <strong>Detalles del trueque</strong>
+                    </h2>
+
+                    <p align="center">
+                        <strong>@TipoTrueque</strong> <br />
+                        por <strong>@NombreCompleto</strong> <br />
+                        @DetallesTrueque
+                    </p>
+                </div>
+            </div>
+
+            <div class="row" style="padding-top: 15px" align="left">
+
+                <div class="col-md-3">
+                    <strong>Estado del trueque: </strong>Cancelado
+                    <br />
+                    <strong>Fecha de creación: </strong>@FechaCreacion
+                    <br />
+                    <strong>Fecha de inicio: </strong>@FechaInicio
+                    <br />
+                    <strong>Fecha final: </strong> @FechaFinal
+                </div>
+
+                <div class="col-md-3">
+
+                </div>
+
+                @if (TipoTrueque == "Subasta")
+                {
+                    <div class="col-md-6" align="right">
+                        <strong>Monto mínimo: </strong> @MontoMinimo
+                    </div>
+                }
+
+            </div>
+
+            <div class="row" style="padding-top: 15px" align="center">
+
+                <div class="col-md">
+
+                    <p align="left">
+                        Este trueque incluye los siguientes ítems:
+                    </p>
+
+                    <div class="wrapper" style="overflow-y: scroll; height: 250px">
+                        @foreach (var item in truequeActual.HistorialTrueques)
+                        {
+                            <div class="itemGroup" id=item.ID style="padding-bottom: 2px; padding-right: 20px">
+                                <label for="@("check"+item.Item.Id_Item)">
+                                    @{
+                                        byte[] foto = null;
+
+                                        if (item.Item.Fotos != null)
+                                        {
+                                            foreach (var i in item.Item.Fotos)
+                                            {
+                                                if (i.Foto != null)
+                                                {
+                                                    foto = i.Foto;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (foto != null)
+                                        {
+                                            String img64 = Convert.ToBase64String(foto);
+                                            String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                            <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Content/Images/default_item.png" width="35" height="35" class="align-self-center" />
+                                        }
+                                    }
+                                    @Html.DisplayFor(modelItem => item.Item.Nombre_Categoria_Item) @Html.DisplayFor(modelItem => item.Item.Titulo)
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</body>
+</html>

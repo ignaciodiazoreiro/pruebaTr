@@ -1,0 +1,490 @@
+﻿@model Proyecto_TruequesUCR.Models.Perfil
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@Styles.Render("~/Content/Comerciante/Perfil.css")
+
+<div class="containerNavBarGeneral">
+    <ul class="navBarGeneral">
+        <li class="navBarGeneralLink"><a href="/Home/Index">Inicio</a></li>
+        <li class="navBarGeneralLink"><a href="/Home/About">Acerca de</a></li>
+        <li class="navBarGeneralLink"><a href="/Home/Contact">Contacto</a></li>
+        @if (Request.IsAuthenticated)
+        {
+            <li class="navBarGeneralLink"><a href="/Items/Index">Mis Items</a></li>
+            <li class="navBarGeneralLink"><a href="/Ofertas/IndexOfertas">Mis ofertas</a></li>
+            <li class="navBarGeneralLink">
+                <a>Mis trueques</a>
+                <ul>
+                    <li><a href="/Trueques/IndexTruequesActivos">Trueques activos</a></li>
+                    <li><a href="/Trueques/IndexTruequesExpirados">Trueques expirados</a></li>
+                    <li><a href="/Trueques/IndexTruequesEliminados">Trueques eliminados</a></li>
+                </ul>
+            </li>
+            <li class="navBarGeneralLink">
+                <a style=" color:black">Recomendaciones</a>
+                <ul>
+                    <li><a href="/Recomendaciones/RecomendacionesPorGustos">Mis gustos</a></li>
+                    <!--<li><a href="">Mi historial de búsqueda</a></li>-->
+                </ul>
+            </li>
+            <li class="navBarGeneralLink"><a href="/Denuncia/Index">Reportar usuario</a></li>
+        }
+    </ul>
+</div>
+<div class="container-fluid h-100 w-100 d-inline-block mb-5">
+    <div class="row justify-content-center w-100">
+        <!-- Contenedor principal -->
+        <div class="col-md-7 mt-5 fondo-blanco h-100">
+            <div class="row">
+                <!-- Barra izquierda -->
+                <div class="col-md-3 fondo-azul p-0">
+                    <ul class="nav flex-column nav-perfil">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link pt-4 pb-4">Artículos Publicados</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Details", "Perfil",new {user=User.Identity.Name})" class="nav-link pt-4 pb-4">Información Personal</a>
+                        </li>
+                        <li class="nav-item activo">
+                            <a href="@Url.Action("Edit", "Perfil")" class="nav-link pt-4 pb-4">Editar Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ListaDeAmigos", "Perfil")" class="nav-link pt-4 pb-4">Mis Amigos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ChangePassword", "Perfil")" class="nav-link pt-4 pb-4">Cambiar Contraseña</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="@Url.Action("Buscar", "Perfil")" class="nav-link pt-4 pb-4">Buscar Usuario</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="@Url.Action("Index", "SolicitudAmistad", new { correoB = User.Identity.Name })" class="nav-link pt-4 pb-4">Solicitudes de Amistad</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cuerpo del Perfil -->
+                <div class="col-md-9">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12 fondo-azul text-center">
+                            <img src=" @Url.Content(ViewBag.foto)" id="foto-perfil-editar" alt="Nombre..." class="foto-perfil">
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <table class="table-responsive-md table-borderless w-100 mt-5">
+                                    <tbody>
+                                        <!-- Foto -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Foto de Perfil</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="file" id="campo-foto" class="form-control" accept="image/png, image/jpeg">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-foto" class="custom-select custom-select-interes">
+                                                            <option value="0" @(ViewBag.PrivacidadFoto == 0 ? "selected" : "")>Sólo Yo</option>
+                                                            <option value="1" @(ViewBag.PrivacidadFoto == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                            <option value="2" @(ViewBag.PrivacidadFoto == 2 ? "selected" : "")>Todos</option>
+                                                        </select>
+                                                        <button id="borrar-foto" class="btn btn-borrar" type="button">Borrar</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Nombre -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Nombre</th>
+                                            <td class="col-md-9">
+                                                <input type="text" id="campo-nombre" class="form-control" value="@ViewBag.Nombre">
+                                                <div id="nombre-error" class="invalid-feedback"></div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Apellido -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Apellido(s)</th>
+                                            <td class="col-md-9">
+                                                <input type="text" id="campo-apellido" class="form-control" value="@ViewBag.Apellido">
+                                                <div id="apellido-error" class="invalid-feedback"></div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Fecha de Nacimiento -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Fecha de Nacimiento</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-nacimiento" class="form-control" value="@ViewBag.FechaNacimiento">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-nacimiento" class="custom-select">
+                                                            <option value="0" @(ViewBag.PrivacidadNacimiento == 0 ? "selected" : "")>Sólo Yo</option>
+                                                            <option value="1" @(ViewBag.PrivacidadNacimiento == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                            <option value="2" @(ViewBag.PrivacidadNacimiento == 2 ? "selected" : "")>Todos</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="nacimiento-error" class="invalid-feedback"></div>
+                                                </div>
+                                                <small class="form-text text-muted">Formato: MM/DD/YYYY (Mes/Día/Año)</small>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Pais -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">País</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-pais" class="form-control" value="@ViewBag.Pais">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-pais" class="custom-select">
+                                                            <option value="0" @(ViewBag.PrivacidadPais == 0 ? "selected" : "")>Sólo Yo</option>
+                                                            <option value="1" @(ViewBag.PrivacidadPais == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                            <option value="2" @(ViewBag.PrivacidadPais == 2 ? "selected" : "")>Todos</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="pais-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Provincia/Estado -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Provincia/Estado</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-provEstado" class="form-control" value="@ViewBag.Provincia_Estado">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-provEstado" class="custom-select">
+                                                            <option value="0" @(ViewBag.Privacidad_ProvEstado == 0 ? "selected" : "")>Sólo Yo</option>
+                                                            <option value="1" @(ViewBag.Privacidad_ProvEstado == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                            <option value="2" @(ViewBag.Privacidad_ProvEstado == 2 ? "selected" : "")>Todos</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="provEstado-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Canton/Ciudad -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Cantón/Ciudad</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-CantCiudad" class="form-control" value="@ViewBag.Canton_Ciudad">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-cantCiudad" class="custom-select">
+                                                            <option value="0" @(ViewBag.Privacidad_CantCiudad == 0 ? "selected" : "")>Sólo Yo</option>
+                                                            <option value="1" @(ViewBag.Privacidad_CantCiudad == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                            <option value="2" @(ViewBag.Privacidad_CantCiudad == 2 ? "selected" : "")>Todos</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="cantCiudad-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Dirección -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Dirección</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-direccion" class="form-control" value="@ViewBag.Direccion">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-direccion" class="custom-select">
+                                                            <option value="0" @(ViewBag.PrivacidadDireccion == 0 ? "selected" : "")>Sólo Yo</option>
+                                                            <option value="1" @(ViewBag.PrivacidadDireccion == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                            <option value="2" @(ViewBag.PrivacidadDireccion == 2 ? "selected" : "")>Todos</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="direccion-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Correo Electrónico -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Correo Electrónico</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" value="@ViewBag.CorreoPrincipal" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Agregar Correo Alternativo -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Correos Alternativos</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="email" id="campo-email-alternativo" class="form-control">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-nuevo-correo" class="custom-select custom-select-interes">
+                                                            <option value="0">Sólo Yo</option>
+                                                            <option value="1">Sólo Amigos</option>
+                                                            <option value="2">Todos</option>
+                                                        </select>
+                                                        <button type="button" id="guardar-correo-alternativo" class="btn btn-celeste btn-redondo"> + Agregar</button>
+                                                    </div>
+                                                    <div id="correo-alternativo-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Correos Alternativos -->
+                                        @for (var i = 0; i < ViewBag.Correos.Length; i++)
+                                        {
+                                            <tr class="d-flex">
+                                                <th class="col-md-3 text-right"></th>
+                                                <td class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="email" value="@ViewBag.Correos[i]" class="form-control" disabled>
+                                                        <div class="input-group-append">
+                                                            <select class="custom-select custom-select-interes privacidad-alternativo" data-privacidad-correo="@ViewBag.Correos[i]">
+                                                                <option value="0" @(ViewBag.PrivacidadCorreos[i] == 0 ? "selected" : "")>Sólo Yo</option>
+                                                                <option value="1" @(ViewBag.PrivacidadCorreos[i] == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                                <option value="2" @(ViewBag.PrivacidadCorreos[i] == 2 ? "selected" : "")>Todos</option>
+                                                            </select>
+                                                            <button class="btn btn-borrar borrar-correo" type="button" data-borrar-correo="@ViewBag.Correos[i]">Borrar</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        <!-- Separador -->
+                                        <tr class="d-flex">
+                                            <td class="col-md-12">
+                                                <hr>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Agregar Teléfono -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Teléfonos</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-telefono" class="form-control">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-nuevo-telefono" class="custom-select custom-select-interes">
+                                                            <option value="0">Sólo Yo</option>
+                                                            <option value="1">Sólo Amigos</option>
+                                                            <option value="2">Todos</option>
+                                                        </select>
+                                                        <button type="button" id="guardar-telefono" class="btn btn-celeste btn-redondo">+ Agregar</button>
+                                                    </div>
+                                                    <div id="telefono-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Teléfonos -->
+                                        @for (var i = 0; i < ViewBag.Telefonos.Length; i++)
+                                        {
+                                            <tr class="d-flex">
+                                                <th class="col-md-3 text-right"></th>
+                                                <td class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" value="@ViewBag.Telefonos[i]" class="form-control" disabled>
+                                                        <div class="input-group-append">
+                                                            <select class="custom-select custom-select-interes privacidad-telefono" data-privacidad-telefono="@ViewBag.Telefonos[i]">
+                                                                <option value="0" @(ViewBag.PrivacidadTelefonos[i] == 0 ? "selected" : "")>Sólo Yo</option>
+                                                                <option value="1" @(ViewBag.PrivacidadTelefonos[i] == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                                <option value="2" @(ViewBag.PrivacidadTelefonos[i] == 2 ? "selected" : "")>Todos</option>
+                                                            </select>
+                                                            <button class="btn btn-borrar borrar-telefono" type="button" data-borrar-telefono="@ViewBag.Telefonos[i]">Borrar</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        <!-- Separador -->
+                                        <tr class="d-flex">
+                                            <td class="col-md-12">
+                                                <hr>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Agregar Interés -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Intereses</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="campo-interes" class="form-control">
+                                                    <div class="input-group-append">
+                                                        <select id="privacidad-nuevo-interes" class="custom-select custom-select-interes">
+                                                            <option value="0">Sólo Yo</option>
+                                                            <option value="1">Sólo Amigos</option>
+                                                            <option value="2">Todos</option>
+                                                        </select>
+                                                        <button type="button" id="guardar-interes" class="btn btn-celeste btn-redondo">+ Agregar</button>
+                                                    </div>
+                                                    <div id="interes-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Intereses -->
+                                        @for (var i = 0; i < ViewBag.Intereses.Length; i++)
+                                        {
+                                            <tr class="d-flex">
+                                                <th class="col-md-3 text-right"></th>
+                                                <td class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" value="@ViewBag.Intereses[i]" class="form-control" disabled>
+                                                        <div class="input-group-append">
+                                                            <select class="custom-select custom-select-interes privacidad-interes" data-privacidad-interes="@ViewBag.Intereses[i]">
+                                                                <option value="0" @(ViewBag.PrivacidadIntereses[i] == 0 ? "selected" : "")>Sólo Yo</option>
+                                                                <option value="1" @(ViewBag.PrivacidadIntereses[i] == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                                <option value="2" @(ViewBag.PrivacidadIntereses[i] == 2 ? "selected" : "")>Todos</option>
+                                                            </select>
+                                                            <button class="btn btn-borrar borrar-interes" type="button" data-borrar-interes="@ViewBag.Intereses[i]">Borrar</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        <!-- Separador -->
+                                        <tr class="d-flex">
+                                            <td class="col-md-12">
+                                                <hr>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Gustos: Etiquetas(Hashtags) y Categorías -->
+                                        <!-- Agregar Categorías Preferidas -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Categorías preferidas</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <select class="dropdown" id="seleccion-categorias">
+                                                        @foreach (var nombreCategoria in ViewBag.NombresDeCategoriasDisponibles)
+                                                        {
+                                                            <option value="@nombreCategoria">@nombreCategoria</option>
+                                                        }
+                                                    </select>
+                                                    <div class="input-group-append">
+                                                        @*<select id="privacidad-nueva-categoria-preferida" class="custom-select custom-select-interes">
+                                                                <option value="0">Sólo Yo</option>
+                                                                <option value="1">Sólo Amigos</option>
+                                                                <option value="2">Todos</option>
+                                                            </select>*@
+                                                        <button type="button" id="guardar-categoria-preferida" class="btn btn-celeste btn-redondo">+ Agregar</button>
+                                                    </div>
+                                                    <div id="categoria-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Mostrar Categorías Preferidas -->
+                                        @foreach (var categoria in ViewBag.CategoriasPreferidas)
+                                        {
+                                            <tr class="d-flex">
+                                                <th class="col-md-3 text-right"></th>
+                                                <td class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" value="@categoria.Nombre_Categoria" class="form-control" disabled>
+                                                        <div class="input-group-append">
+                                                            @*<select class="custom-select custom-select-interes privacidad-interes" data-privacidad-interes="@categoria.Nombre_Categoria">
+                                                                    <option value="0" @(ViewBag.PrivacidadIntereses[i] == 0 ? "selected" : "")>Sólo Yo</option>
+                                                                        <option value="1" @(ViewBag.PrivacidadIntereses[i] == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                                        <option value="2" @(ViewBag.PrivacidadIntereses[i] == 2 ? "selected" : "")>Todos</option>
+                                                                </select>*@
+                                                            <button class="btn btn-borrar borrar-categoria-preferida" type="button" data-borrar-categoria-preferida="@categoria.Nombre_Categoria">Borrar</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        <!-- Separador -->
+                                        <tr class="d-flex">
+                                            <td class="col-md-12">
+                                                <hr>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Agregar Hashtags Preferidos -->
+                                        <tr class="d-flex">
+                                            <th class="col-md-3 text-right">Hashtags preferidos</th>
+                                            <td class="col-md-9">
+                                                <div class="input-group">
+                                                    <select class="dropdown" id="seleccion-hashtags">
+                                                        @foreach (var nombreEtiqueta in ViewBag.NombresDeEtiquetasDisponibles)
+                                                        {
+                                                            <option value="@nombreEtiqueta">@nombreEtiqueta</option>
+                                                        }
+                                                    </select>
+                                                    <div class="input-group-append">
+                                                        @*<select id="privacidad-nueva-categoria-preferida" class="custom-select custom-select-interes">
+                                                                <option value="0">Sólo Yo</option>
+                                                                <option value="1">Sólo Amigos</option>
+                                                                <option value="2">Todos</option>
+                                                            </select>*@
+                                                        <button type="button" id="guardar-hashtag-preferido" class="btn btn-celeste btn-redondo">+ Agregar</button>
+                                                    </div>
+                                                    <div id="hashtag-error" class="invalid-feedback"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Mostrar Etiquetas/Hashtags Preferidos -->
+                                        @foreach (var etiqueta in ViewBag.EtiquetasPreferidas)
+                                        {
+                                            <tr class="d-flex">
+                                                <th class="col-md-3 text-right"></th>
+                                                <td class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" value="@etiqueta.Nombre_Etiqueta" class="form-control" disabled>
+                                                        <div class="input-group-append">
+                                                            @*<select class="custom-select custom-select-interes privacidad-interes" data-privacidad-interes="@categoria.Nombre_Categoria">
+                                                                    <option value="0" @(ViewBag.PrivacidadIntereses[i] == 0 ? "selected" : "")>Sólo Yo</option>
+                                                                        <option value="1" @(ViewBag.PrivacidadIntereses[i] == 1 ? "selected" : "")>Sólo Amigos</option>
+                                                                        <option value="2" @(ViewBag.PrivacidadIntereses[i] == 2 ? "selected" : "")>Todos</option>
+                                                                </select>*@
+                                                            <button class="btn btn-borrar borrar-hashtag-preferido" type="button" data-borrar-hashtag-preferido="@etiqueta.Nombre_Etiqueta">Borrar</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        <!-- Separador -->
+                                        <tr class="d-flex">
+                                            <td class="col-md-12">
+                                                <hr>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Guardar -->
+                                        <tr class="d-flex m2-5">
+                                            <th class="col-md-9 text-right"></th>
+                                            <td class="col-md-3">
+                                                <button type="button" id="guardar-cambios" class="btn btn-verde w-100">Guardar Cambios</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery-3.5.0.min.js");
+    @Scripts.Render("~/Scripts/Comerciante/Perfil.js");
+    @Scripts.Render("~/bundles/jqueryval");
+}

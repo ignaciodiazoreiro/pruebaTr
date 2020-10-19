@@ -1,0 +1,385 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Ofertas>
+
+@{
+    ViewBag.Title = "DetalleOferta";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    @{
+        Proyecto_TruequesUCR.Models.Ofertas ofertaActual = null;
+        Proyecto_TruequesUCR.Models.Trueques truequeActual = null;
+        string TipoTrueque = "";
+        string NombreOfertador = "";
+        string NombreTruequeador = "";
+        string DetallesTrueque = "";
+        decimal Monto = 0;
+        string TipoMoneda = "";
+        string simbolo = "";
+        string FechaCreacion = "";
+        //string FechaFinal = "";
+        int? idTrueque = null;
+        var usuario = User.Identity.Name;
+        string EmailTruequeador = "";
+        string EmailOfertador = "";
+        bool enProgreso = false;
+
+        foreach (var oferta in Model)
+        {
+            // Se verifica si el id del item actual coresponde al mismo que se pasó
+            // en los parametros al momento de que se llamo a esta vista
+            if (ViewBag.IdOferta == oferta.Id)
+            {
+                if (((oferta.OfertaDC.Finalizado == null || (bool)oferta.OfertaDC.Finalizado == false) ? false : true) || (oferta.OfertaDC.OfertaDC1.Count() > 0 && (bool)oferta.OfertaDC.OfertaDC1.FirstOrDefault().Finalizado))
+                {
+                    enProgreso = true;
+                }
+
+                ofertaActual = oferta;
+                truequeActual = oferta.Trueques;
+                idTrueque = truequeActual.IdTrueque;
+                EmailTruequeador = truequeActual.Item.First().Email_Comerciante;
+                EmailOfertador = truequeActual.Tipo == "Subasta" ? ofertaActual.OfertaSubasta.EmailCommerciante : ofertaActual.OfertaDC.Item.First().Email_Comerciante;
+                NombreTruequeador = truequeActual.Item.First().Comerciante.Nombre + " " + truequeActual.Item.First().Comerciante.Apellido;
+
+                if (truequeActual.Tipo == "Directo")
+                {
+                    NombreOfertador = oferta.OfertaDC.Item.First().Comerciante.Nombre + " " + oferta.OfertaDC.Item.First().Comerciante.Apellido;
+                    TipoTrueque = "Oferta a trueque directo";
+                    DetallesTrueque = oferta.OfertaDC.Descripcion;
+                }
+                else if (truequeActual.Tipo == "Circular")
+                {
+                    NombreOfertador = oferta.OfertaDC.Item.First().Comerciante.Nombre + " " + oferta.OfertaDC.Item.First().Comerciante.Apellido;
+                    TipoTrueque = "Oferta a trueque circular";
+                    DetallesTrueque = oferta.OfertaDC.Descripcion;
+                }
+                else if (truequeActual.Tipo == "Subasta")
+                {
+                    NombreOfertador = oferta.OfertaSubasta.Comerciante.Nombre + " " + oferta.OfertaSubasta.Comerciante.Apellido;
+                    TipoTrueque = "Oferta a subasta";
+                    Monto = (decimal)oferta.OfertaSubasta.Monto;
+                    Monto = decimal.Parse(Monto.ToString("F"));
+                    TipoMoneda = oferta.OfertaSubasta.TipoMoneda;
+
+                    switch (TipoMoneda)
+                    {
+                        case "CRC":
+                            simbolo = "¢";
+                            break;
+                        case "USD":
+                            simbolo = "$";
+                            break;
+                        case "EUR":
+                            simbolo = "€";
+                            break;
+                    }
+
+                }
+
+                DateTime fechaC = (DateTime)oferta.FechaCreacion;
+                //DateTime fechaF = (DateTime)trueque.FechaFinal;
+                FechaCreacion = fechaC.ToString("dd'/'MM'/'yyyy");
+
+                break;
+            }
+        }
+
+        <nav aria-label="breadcrumb" id="breadcrumb-1">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="~/Home/Index">
+                        <img src="~/Content/Images/home.png" width="25" height="25" />
+                    </a>
+                </li>
+                @if (usuario == EmailOfertador)
+                {
+                    <li class="breadcrumb-item"><a href="/Ofertas/IndexOfertas">Mis ofertas</a></li>
+                }
+                else
+                {
+                    if (ofertaActual.Trueques.Estado == "Activo")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesActivos">Mis trueques activos</a></li>
+                    }
+                    else if (ofertaActual.Trueques.Estado == "Expirado")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesExpirados">Mis trueques expirados</a></li>
+                    }
+                    <li class="breadcrumb-item"><a href=@Url.Action("DetalleTrueque", "Trueques", new { id = idTrueque, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor })>Detalles del trueque</a></li>
+                }
+                    <li class="breadcrumb-item">Detalles de la oferta</li>
+
+            </ol>
+        </nav>
+
+        <div class="container text-center" id="select">
+
+            <div class="row" style="padding-top: 30px" align="center">
+                <div class="col-md">
+                    <h2 style="padding-bottom: 30px">
+                        @if (enProgreso)
+                        {
+                            <strong>Oferta finalizada</strong>
+                        }
+                        else
+                        {
+                            <strong>Detalles de la oferta</strong>
+                        }
+                        </h2>
+
+                    @if (enProgreso)
+                    {
+                        @:¡Esperamos que disfrutés tus nuevos artículos! Recordá hacer el envío por los medios acordados, para evitar una mala calificación.
+                        <br />
+                        <br />
+                    }
+
+                    @if (EmailTruequeador == usuario) // emisor del trueque
+                    {
+                        <p align="center">
+                            <strong>@TipoTrueque</strong> <br />
+                            por <strong>@Html.ActionLink(NombreOfertador, "", "")</strong> para <strong>@NombreTruequeador</strong> (yo). <br />
+                            @DetallesTrueque
+                        </p>
+                    }
+                    else // receptor del trueque
+                    {
+                        <p align="center">
+                            <strong>@TipoTrueque</strong> <br />
+                            por <strong>@NombreOfertador</strong> (yo) para <strong>@Html.ActionLink(NombreTruequeador, "", "")</strong>. <br />
+                            @DetallesTrueque
+                        </p>
+                    }
+
+                </div>
+            </div>
+
+            <div class="row" style="padding-top: 15px" align="left">
+
+                <div class="col-md-3">
+                    <strong>Fecha de proposición: </strong>@FechaCreacion
+                    <br />
+                </div>
+
+                <div class="col-md-3">
+
+                </div>
+
+                @if (TipoTrueque == "Oferta a subasta")
+                {
+                    <div class="col-md-6" align="right">
+                        <strong>Monto propuesto: </strong> @TipoMoneda @simbolo @Monto
+                    </div>
+                }
+
+            </div>
+
+            <div class="row" style="padding-top: 15px" align="center">
+
+                @if (TipoTrueque == "Oferta a subasta")
+                {
+                    <div class="col-md" align="center" style="padding-top:100px">
+
+                        <div class="row" style="padding-top: 50px">
+                            <div class="col-sm">
+                                <div class="button" style="position:center">
+                                    @if (ofertaActual.OfertaSubasta.Comerciante.Email != usuario) // emisor del trueque
+                                    {
+                                        <div class="row" style="padding-top: 20px">
+                                            <div class="col-sm">
+                                                <div class="button">
+                                                    @{
+                                                        bool aceptado = truequeActual.IdOfertaAceptada != null;
+                                                        bool negociado = (truequeActual.MetodoDigital != null && truequeActual.DetalleDigital != null) || (truequeActual.MetodoFisico != null && truequeActual.DetalleFisico != null);
+
+                                                        if (aceptado && negociado)
+                                                        {
+                                                            @Html.ActionLink("Ver propuesta de envío", "DetalleEnvio", "Ofertas", new { IdTrueque = truequeActual.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @class = "btn btn-primary" })
+                                                        }
+                                                        else if (aceptado)
+                                                        {
+                                                            @Html.ActionLink("Enviar propuesta de envío (pendiente)", "EditarEnvio", "Ofertas", new { IdTrueque = truequeActual.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @id = "confirmarTrueque", @class = "btn btn-primary", onclick = "getDatos()" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.ActionLink("Aceptar oferta", "AceptarOferta", "Ofertas", new { id = ofertaActual.Id, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor, invertir = true }, new { @class = "btn btn-primary" })
+                                                        }
+                                                        @Html.ActionLink("Atrás", "DetalleTrueque", "Trueques", new { id = idTrueque, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor }, new { @class = "btn btn-secondary" })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else // receptor del trueque
+                                    {
+                                        <div class="row" style="padding-top: 20px">
+                                            <div class="col-sm">
+                                                <div class="button">
+                                                    @if (truequeActual.IdOfertaAceptada == ofertaActual.Id)
+                                                    {
+                                                        @Html.ActionLink("Ver propuesta de envío", "DetalleEnvio", "Ofertas", new { IdTrueque = truequeActual.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @class = "btn btn-primary" })
+                                                    }
+                                                    @Html.ActionLink("Ir al trueque", "DetalleTrueque", "Trueques", new { id = idTrueque, predecesor = "oferta", idPredecesor = ViewBag.IdOferta }, new { @class = "btn btn-primary" })
+                                                    @Html.ActionLink("Atrás", "IndexOfertas", "Ofertas", null, new { @class = "btn btn-secondary" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md">
+
+                        <p align="left">
+                            Esta oferta incluye los siguientes ítems:
+                        </p>
+
+                        <div class="wrapper" style="overflow-y: scroll; height: 250px">
+                            @foreach (var item in ofertaActual.OfertaDC.Item)
+                            {
+                                <div class="itemGroup" id=item.ID style="padding-bottom: 2px; padding-right: 20px">
+                                    <label for="@("check"+item.Id_Item)">
+                                        @{
+                                            byte[] foto = null;
+
+                                            if (item.Fotos != null)
+                                            {
+                                                foreach (var i in item.Fotos)
+                                                {
+                                                    if (i.Foto != null)
+                                                    {
+                                                        foto = i.Foto;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            if (foto != null)
+                                            {
+                                                String img64 = Convert.ToBase64String(foto);
+                                                String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                                <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Content/Images/fotoPredeterminada.png" width="35" height="35" class="align-self-center" />
+                                            }
+
+                                            string estado = item.Nombre_Estado_Item.ToLower();
+                                            @:[@Html.DisplayFor(modelItem => item.Nombre_Categoria_Item)] @Html.DisplayFor(modelItem => item.Titulo), en estado "@estado". @Html.DisplayFor(modelItem => item.Descripcion)
+                                        }
+                                    </label>
+                                </div>
+                            }
+                        </div>
+
+
+                        <div class="row" style="padding-top: 50px">
+                            <div class="col-sm">
+                                <div class="button" style="position:center">
+                                    @if (ofertaActual.OfertaDC.Item.First().Email_Comerciante != usuario) // emisor del trueque o usuario cualquiera en trueque circular diferente al dueño de la oferta detallada
+                                    {
+                                        <div class="row" style="padding-top: 20px">
+                                            <div class="col-sm">
+                                                <div class="button">
+
+                                                    @{
+                                                        bool aceptadoOO = ofertaActual.OfertaDC.IdOfertaAceptada != null || ofertaActual.OfertaDC.OfertaDC1 != null;
+                                                        bool aceptadoOT = truequeActual.IdOfertaAceptada != null;
+                                                        bool negociadoOO = (ofertaActual.OfertaDC.MetodoDigital != null && ofertaActual.OfertaDC.DetalleDigital != null) || (ofertaActual.OfertaDC.MetodoFisico != null && ofertaActual.OfertaDC.DetalleFisico != null);
+                                                        bool negociadoOT = (truequeActual.MetodoDigital != null && truequeActual.DetalleDigital != null) || (truequeActual.MetodoFisico != null && truequeActual.DetalleFisico != null) && !negociadoOO;
+                                                        negociadoOO = negociadoOO && !negociadoOT;
+                                                        if (aceptadoOT && negociadoOT && truequeActual.IdOfertaAceptada == ofertaActual.Id && ofertaActual.OfertaDC.OfertaDC2 != null && usuario == ofertaActual.OfertaDC.OfertaDC2.Item.FirstOrDefault().Email_Comerciante)
+                                                        {
+                                                            @:@Html.ActionLink("Ver propuesta de envío", "DetalleEnvio", "Ofertas", new { IdTrueque = truequeActual.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @class = "btn btn-primary" })
+                                                        }
+                                                        else if (aceptadoOO && negociadoOO && ((ofertaActual.OfertaDC.OfertaDC2 != null && usuario == ofertaActual.OfertaDC.OfertaDC2.Item.FirstOrDefault().Email_Comerciante) || (ofertaActual.OfertaDC.OfertaDC2 == null && ofertaActual.OfertaDC.OfertaDC1.Count() > 0)))
+                                                        {
+                                                            @:@Html.ActionLink("Ver propuesta de envío", "DetalleEnvio", "Ofertas", new { IdOferta = ofertaActual.Id, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = false }, new { @class = "btn btn-primary" })
+                                                        }
+                                                        else if (aceptadoOT && truequeActual.IdOfertaAceptada == ofertaActual.Id && ofertaActual.OfertaDC.OfertaDC2 != null && usuario == ofertaActual.OfertaDC.OfertaDC2.Item.FirstOrDefault().Email_Comerciante)
+                                                        {
+                                                            @:@Html.ActionLink("Enviar propuesta de envío (pendiente)", "EditarEnvio", "Ofertas", new { IdTrueque = truequeActual.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @id = "confirmarTrueque", @class = "btn btn-primary", onclick = "getDatos()" })
+                                                        }
+                                                        else if (aceptadoOO && ofertaActual.OfertaDC.OfertaDC2 != null && usuario == ofertaActual.OfertaDC.OfertaDC2.Item.FirstOrDefault().Email_Comerciante)
+                                                        {
+                                                            @:@Html.ActionLink("Enviar propuesta de envío (pendiente)", "EditarEnvio", "Ofertas", new { IdOferta = ofertaActual.Id, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = false }, new { @id = "confirmarTrueque", @class = "btn btn-primary", onclick = "getDatos()" })
+                                                        }
+                                                        else if ((((truequeActual.IdOfertaAceptada != null && truequeActual.IdOfertaAceptada == ofertaActual.Id) || truequeActual.IdOfertaAceptada == null) && (ofertaActual.OfertaDC.OfertaDC2 != null && usuario == ofertaActual.OfertaDC.OfertaDC2.Item.FirstOrDefault().Email_Comerciante)) || truequeActual.IdOfertaAceptada == null && ofertaActual.OfertaDC.OfertaDC1.Count() == 0 && ofertaActual.OfertaDC.OfertaDC2 == null)
+                                                        {
+                                                            if (TipoTrueque == "Oferta a trueque circular" && usuario != EmailTruequeador)
+                                                            {
+                                                                @Html.ActionLink("Aceptar oferta", "AceptarOferta", "Ofertas", new { id = ofertaActual.Id, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor, idOfertaSegunda = ViewBag.IdOfertaSegunda, invertir = false }, new { @class = "btn btn-primary" })
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.ActionLink("Aceptar oferta", "AceptarOferta", "Ofertas", new { id = ofertaActual.Id, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor, invertir = true }, new { @class = "btn btn-primary" })
+                                                            }
+                                                        }
+                                                        else if ((ofertaActual.OfertaDC.OfertaDC2 != null && usuario != ofertaActual.OfertaDC.OfertaDC2.Item.FirstOrDefault().Email_Comerciante) || (ofertaActual.OfertaDC.OfertaDC1 != null && ofertaActual.OfertaDC.OfertaDC1.FirstOrDefault() != null && usuario != ofertaActual.OfertaDC.OfertaDC1.FirstOrDefault().Item.FirstOrDefault().Email_Comerciante))
+                                                        {
+                                                            @Html.ActionLink("La oferta ya ha sido aceptada por otro participante", "EditarEnvio", "Ofertas", null, new { @class = "btn btn-disabled", @disabled = true })
+                                                        }
+
+                                                        @Html.ActionLink("Atrás", "DetalleTrueque", "Trueques", new { id = idTrueque, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdPredecesor }, new { @class = "btn btn-secondary" })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else // receptor del trueque (dueño de la oferta detallada)
+                                    {
+                                        <div class="row" style="padding-top: 20px">
+                                            <div class="col-sm">
+                                                <div class="button">
+                                                    @if (!enProgreso)
+                                                    {
+                                                        if (truequeActual.IdOfertaAceptada == ofertaActual.Id)
+                                                        {
+                                                            @Html.ActionLink("Ver propuesta de envío", "DetalleEnvio", "Ofertas", new { IdTrueque = truequeActual.IdTrueque, Predecesor = ViewBag.Predecesor, IdPredecesor = ViewBag.IdDelTrueque, AceptoTrueque = true }, new { @class = "btn btn-primary" })
+                                                        }
+                                                        @Html.ActionLink("Ir al trueque", "DetalleTrueque", "Trueques", new { id = idTrueque, predecesor = "oferta", idPredecesor = ViewBag.IdOferta }, new { @class = "btn btn-primary" })
+                                                        @Html.ActionLink("Atrás", "IndexOfertas", "Ofertas", null, new { @class = "btn btn-secondary" })
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="button" class="btn btn-disabled">Calificar truequeador</button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    }
+</body>
+</html>

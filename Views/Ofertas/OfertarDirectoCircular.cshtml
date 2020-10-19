@@ -1,0 +1,376 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Item>
+
+@{
+    ViewBag.Title = "OfertarDirectoCircular";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    <nav aria-label="breadcrumb" id="breadcrumb-1">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/Home/Index">
+                    <img src="~/Content/Images/home.png" width="25" height="25" />
+                </a>
+            </li>
+            <li class="breadcrumb-item"><a href="/Trueques/DetalleTrueque/@ViewBag.IdTrueque">Detalles del trueque</a></li>
+            <li class="breadcrumb-item">Hacer una oferta</</li>
+        </ol>
+    </nav>
+
+    <div class="container text-center" id="titleHacerOferta" style="padding-top: 30px; padding-bottom: 20px">
+        <h2>
+            <strong>Hacer una oferta</strong>
+        </h2>
+    </div>
+
+    <div class="container text-center" id="select">
+
+        <div class="col-lg">
+            <h3 style="padding-bottom: 20px">
+                <strong>Seleccione los ítems para su oferta:</strong>
+            </h3>
+            <div class="wrapper" id="items_to_select" style="width: 1100px; overflow-y: auto; height:250px; margin: 0 auto">
+                <form name="combo_button">
+                    @foreach (var item in Model)
+                    {
+                        if (item.IdTrueque == null && item.IdOferta == null && item.Email_Comerciante == User.Identity.Name && item.Eliminado == false)
+                        {
+                            <div class="inputGroup" id=item.ID style="padding-bottom: 2px; padding-right: 20px">
+                                <input id="@("check" + item.Id_Item)" name="opcion" type="checkbox" value="@(item.Id_Item)" />
+                                <label for="@("check" + item.Id_Item)">
+                                    @{
+                                        byte[] foto = null;
+
+                                        if (item.Fotos != null)
+                                        {
+                                            foreach (var i in item.Fotos)
+                                            {
+                                                if (i.Foto != null)
+                                                {
+                                                    foto = i.Foto;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (foto != null)
+                                        {
+                                            String img64 = Convert.ToBase64String(foto);
+                                            String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                            <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Content/Images/fotoPredeterminada.png" width="35" height="35" class="align-self-center" />
+                                        }
+                                    }
+                                    [@Html.DisplayFor(modelItem => item.Nombre_Categoria_Item)] @Html.DisplayFor(modelItem => item.Titulo)
+                                </label>
+                            </div>
+                        }
+
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        if ((item.IdTrueque != null || item.IdOferta != null) && item.Email_Comerciante == User.Identity.Name)
+                        {
+                            <div class="inputGroup" id=item.ID style="padding-bottom: 2px; padding-right: 20px">
+                                <input id="@("check" + item.Id_Item)" name="opcion" type="checkbox" value="@(item.Id_Item)" disabled />
+                                <label for="@("check" + item.Id_Item)">
+                                    @{
+                                        byte[] foto = null;
+
+                                        if (item.Fotos != null)
+                                        {
+                                            foreach (var i in item.Fotos)
+                                            {
+                                                if (i.Foto != null)
+                                                {
+                                                    foto = i.Foto;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (foto != null)
+                                        {
+                                            String img64 = Convert.ToBase64String(foto);
+                                            String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                            <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Content/Images/fotoPredeterminada.png" width="35" height="35" class="align-self-center" />
+                                        }
+
+                                        if (item.IdTrueque != null)
+                                        {
+                                            @:[@Html.DisplayFor(modelItem => item.Nombre_Categoria_Item)] @Html.DisplayFor(modelItem => item.Titulo) (en trueque)
+                                        }
+                                        else
+                                        {
+                                            @:[@Html.DisplayFor(modelItem => item.Nombre_Categoria_Item)] @Html.DisplayFor(modelItem => item.Titulo) (en oferta)
+                                        }
+
+                                    }
+                                </label>
+                            </div>
+                        }
+
+                    }
+                </form>
+            </div>
+        </div>
+
+        <form name="datos">
+            <div class="row" style="padding-top: 60px">
+                <h3 style="padding-bottom: 5px">
+                    <strong>Descripción de la oferta:</strong>
+                </h3>
+            </div>
+
+            <div class="row" style="padding-top: 5px">
+                <textarea name="descripcion" rows="3" cols="165" title="Solo numeros y letras" style="resize:none"></textarea>
+            </div>
+        </form>
+
+        <div class="row" style="padding-top: 20px">
+            <div class="col-sm">
+                <div class="button" style="position:center">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" onclick=DireccionarOfertas(@ViewBag.IdTrueque)>Enviar oferta</button>
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#detallesTrueque">Detalles del trueque</button>
+                    @Html.ActionLink("Atrás", "DetalleTrueque", "Trueques", new { id = ViewBag.IdTrueque }, new { @class = "btn btn-secondary" })
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bd-example-modal-lg" id="detallesTrueque" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Detalles del trueque</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal_body_detalles">
+                        @{
+                            string TipoTrueque = "";
+                            string NombreCompleto = "";
+                            string DetallesTrueque = "";
+                            string FechaInicio = "";
+                            string FechaFinal = "";
+                            decimal MontoMinimo = 0;
+                            string TipoMoneda = "";
+                            string simbolo = "";
+                            string FechaCreacion = "";
+                            string EstadoTrueque = "";
+                            string email = "";
+
+                            foreach (var item in Model)
+                            {
+                                if (item.Trueques != null)
+                                {
+                                    // Se verifica si el id del item actual coresponde al mismo que se pasó
+                                    // en los parametros al momento de que se llamo a esta vista
+                                    if (ViewBag.IdTrueque == item.Trueques.IdTrueque)
+                                    {
+                                        NombreCompleto = item.Comerciante.Nombre + " " + item.Comerciante.Apellido;
+                                        if (item.Trueques.Tipo == "Directo")
+                                        {
+                                            TipoTrueque = "Trueque directo";
+                                        }
+                                        else if (item.Trueques.Tipo == "Circular")
+                                        {
+                                            TipoTrueque = "Trueque circular";
+                                        }
+                                        else if (item.Trueques.Tipo == "Subasta")
+                                        {
+                                            TipoTrueque = "Subasta";
+                                            MontoMinimo = (decimal)item.Trueques.Subasta.Monto;
+                                            MontoMinimo = decimal.Parse(MontoMinimo.ToString("F"));
+                                            TipoMoneda = item.Trueques.Subasta.TipoMoneda;
+                                            switch (TipoMoneda)
+                                            {
+                                                case "CRC":
+                                                    simbolo = "¢";
+                                                    break;
+                                                case "USD":
+                                                    simbolo = "$";
+                                                    break;
+                                                case "EUR":
+                                                    simbolo = "€";
+                                                    break;
+                                            }
+
+                                        }
+
+                                        EstadoTrueque = item.Trueques.Estado;
+
+                                        DateTime fechaI = (DateTime)item.Trueques.FechaInicio;
+                                        DateTime fechaF = (DateTime)item.Trueques.FechaFinal;
+                                        DateTime fechaC = (DateTime)item.Trueques.FechaCreacion;
+
+                                        FechaInicio = fechaI.ToString("dd'/'MM'/'yyyy");
+                                        FechaFinal = fechaF.ToString("dd'/'MM'/'yyyy");
+                                        FechaCreacion = fechaC.ToString("dd'/'MM'/'yyyy");
+
+                                        DetallesTrueque = item.Trueques.Descripcion;
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        <div class="container text-center" id="select">
+
+                            <div class="row" style="padding-top: 30px" align="center">
+                                <div class="col-md">
+                                    <h2 style="padding-bottom: 30px">
+                                        <strong>Detalles del trueque</strong>
+                                    </h2>
+
+                                    <p align="center">
+                                        <strong>@TipoTrueque</strong> <br />
+                                        por <strong>@NombreCompleto</strong> <br />
+                                        @DetallesTrueque
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row" style="padding-top: 15px" align="left">
+
+                                <div class="col-lg">
+                                    <strong>Estado del trueque: </strong>@EstadoTrueque
+                                    <br />
+                                    <strong>Fecha de creación: </strong>@FechaCreacion
+                                    <br />
+                                    <strong>Fecha de inicio: </strong>@FechaInicio
+                                    <br />
+                                    <strong>Fecha final: </strong> @FechaFinal
+                                </div>
+
+                                <div class="col-md-3">
+
+                                </div>
+
+                                @if (TipoTrueque == "Subasta")
+                                {
+                                    <div class="col-md-6" align="right">
+                                        <strong>Monto mínimo: </strong> @TipoMoneda @simbolo @MontoMinimo
+                                    </div>
+                                }
+
+                            </div>
+
+                            <div class="row" style="padding-top: 15px" align="center">
+
+                                <div class="col-md">
+                                    <!--
+                                    <p align="center">
+                                        <strong>@TipoTrueque</strong> <br />
+                                        por @NombreCompleto para <strong></strong>
+                                    </p>
+                                    -->
+
+                                    <p align="left">
+                                        Este trueque incluye los siguientes ítems:
+                                    </p>
+
+                                    <div class="wrapper" style="overflow-y: scroll; height: 125px">
+                                        @foreach (var item in Model)
+                                        {
+                                            if (item.Trueques != null)
+                                            {
+                                                email = item.Email_Comerciante;
+                                                if (ViewBag.IdTrueque == item.Trueques.IdTrueque)
+                                                {
+                                                    email = item.Email_Comerciante;
+                                                    <div class="itemGroup" id=item.ID style="padding-bottom: 2px; padding-right: 20px">
+                                                        <label for="@(" check"+item.Id_Item)">
+                                                            @{
+                                                                byte[] foto = null;
+
+                                                                if (item.Fotos != null)
+                                                                {
+                                                                    foreach (var i in item.Fotos)
+                                                                    {
+                                                                        if (i.Foto != null)
+                                                                        {
+                                                                            foto = i.Foto;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (foto != null)
+                                                                {
+                                                                    String img64 = Convert.ToBase64String(foto);
+                                                                    String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                                                    <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="~/Content/Images/default_item.png" width="35" height="35" class="align-self-center" />
+                                                                }
+                                                            }
+                                                            [@Html.DisplayFor(modelItem => item.Nombre_Categoria_Item)] @Html.DisplayFor(modelItem => item.Titulo)
+                                                        </label>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="tipoOferta" value="Create">
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createOfertaSuccess" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><strong>¡Su oferta ha sido creada!</strong></h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Oferta enviada. Se notificará al truequeador.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    @Html.ActionLink("Aceptar", "DetalleTrueque", "Trueques", new { id = ViewBag.IdTrueque }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/Ofertas.js"></script>
+</body>
+</html>

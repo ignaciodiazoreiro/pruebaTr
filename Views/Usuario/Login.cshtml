@@ -1,0 +1,98 @@
+﻿
+@model Proyecto_TruequesUCR.Models.Usuario
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/Master.css">
+    <link rel="stylesheet" href="~/Content/template.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+</head>
+<body>
+    <div class="container-fluid h-100 w-100 d-inline-block">
+        <div class="row justify-content-center h-100 w-100">
+            <div class="col-md-4 align-self-center">
+                <div class="card">
+                    <div class="card-header fondo-azul texto-centrado">
+                        <h1>Inicio de Sesión</h1>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+                        <form>
+                            <!-- Correo Electrónico -->
+                            <div class="form-row mb-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text icono-mono">@@</span>
+                                        </div>
+
+                                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @type = "email", @class = "form-control", @placeholder = "Correo Electrónico", @id = "correo"} })
+
+
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+
+                            <!-- Contraseña -->
+                            <div class="form-row mb-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text icono-mono">*</span>
+                                        </div>
+                                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @type = "password", @aria_describedby = "passwordHelp", @class = "form-control", @placeholder = "Password", @id = "contrasena" } })
+
+
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        @Html.CheckBoxFor(model => model.MantenerSesion)
+                                        <label for="terminos-check">Mantener Sesión Iniciada</label>
+                                        @Html.ValidationMessageFor(model => model.MantenerSesion, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Confirmacion, "", new { @class = "text-danger" })
+                            <!-- Olvidó la contraseña -->
+                            <div class="form-group">
+                                <small>
+                                    @Html.ActionLink("Olvidé mi contraseña", "ReestablecerPassword", "Comerciante", null, new { @class = "" })
+                                </small>
+                            </div>
+                            <!-- Botón de login -->
+                            <div class="form-row mb-3 justify-content-center">
+                                <div class="col-md-6">
+                                    <button class="btn btn-verde w-100" id="boton_IS">Iniciar Sesión</button>
+                                </div>
+                            </div>
+                        </form>
+                            }
+                        </div>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

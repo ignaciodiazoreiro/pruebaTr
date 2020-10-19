@@ -1,0 +1,243 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Item>
+
+@{
+    ViewBag.Title = "EditarEnvio";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    @{
+        var DatosEnvio = TempData["DatosEnvio"] as List<string>;
+        var itemsFisicos = TempData["ItemsFisicos"] as List<Proyecto_TruequesUCR.Models.Item>;
+        var itemsDigitales = TempData["ItemsDigitales"] as List<Proyecto_TruequesUCR.Models.Item>;
+        string[] tiposEnvioFisico = { "Entrega personal", "Encomienda", "Correos de Costa Rica", "FedEx", "DHL", "Otros..." };
+        string[] tiposEnviodigital = { "MEGA", "Dropbox", "OneDrive", "Google Drive", "Correo electrónico", "Otros..." };
+
+        string EmailCreador = "";
+        Proyecto_TruequesUCR.Models.Trueques Trueque = ViewBag.Trueque;
+        if (Trueque != null)
+        {
+            EmailCreador = Trueque.Item.First().Email_Comerciante;
+        }
+        int index = 1;
+        var usuario = User.Identity.Name;
+
+        <nav aria-label="breadcrumb" id="breadcrumb-1">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="~/Home/Index">
+                        <img src="~/Content/Images/home.png" width="25" height="25" />
+                    </a>
+                </li>
+                @if (ViewBag.AceptoTrueque && usuario == EmailCreador)
+                {
+                    if (ViewBag.Predecesor == "activos")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesActivos">Mis trueques activos</a></li>
+                    }
+                    else if (ViewBag.Predecesor == "expirados")
+                    {
+                        <li class="breadcrumb-item"><a href="/Trueques/IndexTruequesExpirados">Mis trueques expirados</a></li>
+                    }
+                }
+                else
+                {
+                    if (ViewBag.Predecesor == "item")
+                    {
+                        <li class="breadcrumb-item">Detalles del ítem</li>
+                    }
+                    else if (ViewBag.Predecesor == "oferta")
+                    {
+                        <li class="breadcrumb-item"><a href="/Ofertas/IndexOfertas">Mis ofertas</a></li>
+                        <li class="breadcrumb-item"><a href=@Url.Action("DetalleOferta", "Ofertas", new { id = ViewBag.IdPredecesor, predecesor = ViewBag.Predecesor, idPredecesor = ViewBag.IdDelTrueque })>Detalles de la oferta</a></li>
+                    }
+                }
+                <li class="breadcrumb-item">Detalles del trueque</li>
+            </ol>
+        </nav>
+
+        <div class="container text-center" id="select">
+
+            <div class="row" style="padding-top: 30px" align="center">
+
+                <div class="col-md">
+                    <h2 style="padding-bottom: 15px">
+                        <strong>Detalles de envío</strong>
+                    </h2>
+
+                    <p align="center">
+                        A continuación envíe una propuesta. Se le notificará la respuesta del truequeador.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row" style="padding-top: 30px" align="center">
+
+                @if (itemsFisicos.Count > 0)
+                {
+                    index = 1;
+                    <div class="col-lg" align="center">
+                        <strong align="center">Envíos físicos</strong>
+                        <br />
+                        Los siguientes ítems involucrados en el intercambio son físicos:
+                        <br /> <br />
+
+                        @foreach (var item in itemsFisicos)
+                        {
+                            @:@(index++). [@item.Nombre_Categoria_Item] @(item.Titulo) (de @(item.Comerciante.Nombre))
+                            <br />
+                        }
+                        <br /> <br />
+                    </div>
+                }
+
+                @if (itemsDigitales.Count > 0 || (Trueque != null && Trueque.Tipo == "Subasta"))
+                {
+                    index = 1;
+                    <div class="col-lg" align="center">
+                        <strong align="center">Envíos digitales</strong>
+                        <br />
+                        Los siguientes ítems involucrados en el intercambio son digitales:
+                        <br /> <br />
+
+                        @foreach (var item in itemsDigitales)
+                        {
+                            @:@(index++). [@item.Nombre_Categoria_Item] @(item.Titulo) (de @(item.Comerciante.Nombre))
+                            <br />
+                        }
+                        @{
+                            @:@(index++). [Dinero] @Trueque.Ofertas1.OfertaSubasta.TipoMoneda @Trueque.Ofertas1.OfertaSubasta.Monto.ToString("F") (de @Trueque.Ofertas1.OfertaSubasta.Comerciante.Nombre)
+                            <br />
+                        }
+                        <br /> <br />
+                    </div>
+                }
+
+            </div>
+
+            <div class="row" style="padding-top: 15px" align="center">
+
+                @if (itemsFisicos.Count > 0)
+                {
+                    <div class="col-lg" align="center">
+                        Elija un medio de envío:&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select id="envioFisico">
+
+                            @foreach (var i in tiposEnvioFisico)
+                            {
+                                if (i == DatosEnvio.ElementAt(0))
+                                {
+                                    <option selected>@i</option>
+                                }
+                                else
+                                {
+                                    <option>@i</option>
+                                }
+                            }
+
+                            <option></option>
+                        </select>
+                    </div>
+                }
+
+                @if (itemsDigitales.Count > 0 || (Trueque != null && Trueque.Tipo == "Subasta"))
+                {
+                    <div class="col-lg" align="center">
+                        Elija un medio de envío:&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select id="envioDigital">
+
+                            @foreach (var i in tiposEnviodigital)
+                            {
+                                if (i == DatosEnvio.ElementAt(2))
+                                {
+                                    <option selected>@i</option>
+                                }
+                                else
+                                {
+                                    <option>@i</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                }
+            </div>
+
+            <div class="row" style="padding-top: 60px" align="center">
+
+                @if (itemsFisicos.Count > 0)
+                {
+                    <div class="col-lg" align="center">
+                        Detalles:
+                        <br />
+                        <textarea id="detallesFisico" rows="3" cols="60" maxlength="150" title="Ingrese solo números y letras." pattern="[A-Za-z0-9]+" style="resize:none">@DatosEnvio[1]</textarea>
+                    </div>
+                }
+                @if (itemsDigitales.Count > 0 || (Trueque != null && Trueque.Tipo == "Subasta"))
+                {
+                    <div class="col-lg" align="center">
+                        Detalles:
+                        <br />
+                        <textarea id="detallesDigital" rows="3" cols="60" maxlength="150" title="Ingrese solo números y letras." pattern="[A-Za-z0-9]+" style="resize:none">@DatosEnvio[3]</textarea>
+                    </div>
+                }
+                </div>
+
+            <div class="row" style="padding-top: 60px">
+
+                <div class="col-lg-12">
+                    <div class="btn btn-primary">
+                        <a data-toggle="modal" id="enviar">Enviar propuesta</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal fade" id="enviarPropuesta" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><strong>¡Propuesta enviada!</strong></h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Se le notificará al truequeador.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+
+                            @if (ViewBag.AceptoTrueque)
+                            {
+                                <input type="hidden" id="id" value="@(ViewBag.Trueque.IdTrueque)">
+                                @:@Html.ActionLink("Aceptar", "DetalleEnvio", "Ofertas", new { IdTrueque = ViewBag.Trueque.IdTrueque, Predecesor = "activos", AceptoTrueque = true }, new { @class = "btn btn-primary" })
+                            }
+                            else
+                            {
+                                <input type="hidden" id="id" value="@(ViewBag.OfertaPrimera.Id)">
+                                @:@Html.ActionLink("Aceptar", "DetalleEnvio", "Ofertas", new { IdOferta = ViewBag.OfertaPrimera.Id, Predecesor = "activos", AceptoTrueque = false }, new { @class = "btn btn-primary" })
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    <script src="~/Scripts/setDatosEnvio.js"></script>
+</body>
+</html>

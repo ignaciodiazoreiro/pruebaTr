@@ -1,0 +1,216 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Trueques>
+
+@{
+    ViewBag.Title = "IndexTruequesEliminados";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    <nav aria-label="breadcrumb" id="breadcrumb-1">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/Home/Index">
+                    <img src="~/Content/Images/home.png" width="25" height="25" />
+                </a>
+            </li>
+            <li class="breadcrumb-item">Mis trueques eliminados</</li>
+        </ol>
+    </nav>
+
+    <div class="container text-center" id="titleMisTrueques" style="padding-top: 30px">
+        <h2>
+            <strong>Mis trueques eliminados</strong>
+        </h2>
+    </div>
+
+    <div class="container text-center" id="select">
+        <div class="row" style="padding-top: 30px">
+            <div class="col-lg-12">
+                <div class="wrapper" id="trueques_to_select" style="overflow-y: scroll; position:relative; height:500px;">
+
+                    @foreach (var trueque in Model)
+                    {
+                        string nombreTrueque = "", nombreCreacion = "", tipo_trueque = "";
+                        int idActual = trueque.IdTrueque;
+                        var usuario = User.Identity.Name;
+
+                        if (trueque.HistorialTrueques.Count() != 0 && trueque.HistorialTrueques.First().EmailComerciante == usuario && trueque.Estado == "Cancelado")
+                        {
+                            int ocurrencia = trueque.HistorialTrueques.Count();
+                            var fechaCreacion = trueque.FechaCreacion;
+                            nombreCreacion = "Creado en " + fechaCreacion;
+                            int idItem1 = 0, idItem2 = 0;
+                            byte[] foto = null;
+                            string nombreItem1 = "", nombreItem2 = "";
+                            string categoriaItem1 = "", categoriaItem2 = "";
+                            bool primeraIteracion = true;
+                            string emailComerciante = "";
+
+                            foreach (var item in trueque.HistorialTrueques)
+                            {
+                                if (primeraIteracion)
+                                {
+                                    idItem1 = item.Item.Id_Item;
+                                    nombreItem1 = item.Item.Titulo;
+                                    categoriaItem1 = "[" + item.Item.Nombre_Categoria_Item + "]";
+
+                                    if (item.Item.Fotos != null)
+                                    {
+                                        foreach (var i in item.Item.Fotos)
+                                        {
+                                            if (i.Foto != null)
+                                            {
+                                                foto = i.Foto;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    emailComerciante = item.Item.Email_Comerciante;
+                                    primeraIteracion = false;
+                                }
+                                else
+                                {
+                                    idItem2 = item.Item.Id_Item;
+                                    nombreItem2 = item.Item.Titulo;
+                                    categoriaItem2 = "[" + item.Item.Nombre_Categoria_Item + "]";
+                                    break;
+                                }
+                            }
+                            if (emailComerciante == usuario) { 
+                                <div class="itemGroup" id=trueques.ID style="padding-bottom: 2px; padding-right: 20px">
+                                    <!--<input id="@("check"+idActual)" name="opcion" type="button" onclick="location.href='@Url.Action("DetalleTruequeEliminado", "Trueques", new { id = idActual })'" value="@(idActual)" />-->
+                                    <input id="@("check"+idActual)" name="opcion" value="@(idActual)" />
+                                    <label for="@("check"+idActual)">
+                                        @{
+                                            switch (ocurrencia)
+                                            {
+                                                case 1:
+
+                                                    if (foto != null)
+                                                    {
+                                                        String img64 = Convert.ToBase64String(foto);
+                                                        String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                                        <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Content/Images/default_item.png" width="35" height="35" class="align-self-center" />
+                                                    }
+
+                                                    nombreTrueque = categoriaItem1 + " " + nombreItem1;
+                                                    break;
+
+                                                case 2:
+
+                                                    <img src="~/Content/Images/trueque_default.png" width="35" height="35" class="align-self-center" />
+                                                    nombreTrueque += categoriaItem1 + " " + nombreItem1 + " y " + categoriaItem2 + " " + nombreItem2;
+                                                    break;
+
+                                                case 3:
+
+                                                    <img src="~/Content/Images/trueque_default.png" width="35" height="35" class="align-self-center" />
+                                                    nombreTrueque += categoriaItem1 + " " + nombreItem1 + ", " + categoriaItem2 + " " + nombreItem2 + ", entre otros";
+                                                    break;
+                                            }
+                                        }
+
+                                        @if (trueque.Tipo == "Subasta")
+                                        {
+                                            tipo_trueque = trueque.Tipo + " de ";
+                                        }
+                                        else
+                                        {
+                                            tipo_trueque = "Trueque " + trueque.Tipo.ToLower() + " de ";
+                                        }
+
+                                        @tipo_trueque <strong>@(nombreTrueque)</strong> &nbsp;&nbsp;&nbsp;&nbsp; @nombreCreacion
+
+                                        @(nombreTrueque = "")
+                                        @(nombreCreacion = "")
+
+                                        <a href="#@("activate"+idActual)" id="right" data-toggle="modal" onclick=activarTrueque(@idActual)>Activar</a>
+                                        <a href="#@("delete"+idActual)" id="right" data-toggle="modal" data-target="#@("del"+idActual)">Eliminar</a>
+                                        @Html.ActionLink("Detalles", "DetalleTruequeEliminado", "Trueques", new { id = idActual }, new { id = "right" })
+
+                                    </label>
+                                </div>
+
+                                <div class="modal fade" id="@("del"+idActual)" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <!-- se agrega el id del trueque como parte del nombre del componente -->
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Está seguro que desea eliminar el trueque permanentemente?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                <!-- se agrega el id del trueque como parte del nombre del componente -->
+                                                <input id="@("confElim"+idActual)" type="submit" value="Eliminar" class="btn btn-primary" onclick=eliminarPermanente(@idActual) />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteSuccess" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><strong>¡Su trueque ha sido eliminado permanentemente!</strong></h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Este trueque ya no existirá en ninguno de sus historiales.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    @Html.ActionLink("Aceptar", "IndexTruequesEliminados", "Trueques", null, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="activateSuccess" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><strong>¡Su trueque ha sido activado exitosamente!</strong></h5>
+                </div>
+                <div class="modal-body" id="modal_body_activate">
+                </div>
+                <div class="modal-footer" id="modal_footer_activate">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/Trueques.js"></script>
+
+</body>
+</html>

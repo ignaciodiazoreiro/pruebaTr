@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Trueques>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Estado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaFinal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Circular.IdTrueque)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Directo.IdTrueque)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Subasta.IdTrueque)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estado)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaInicio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaFinal)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Circular.IdTrueque)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Directo.IdTrueque)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Subasta.IdTrueque)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.IdTrueque }) |
+            @Html.ActionLink("Details", "Details", new { id=item.IdTrueque }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.IdTrueque })
+        </td>
+    </tr>
+}
+
+</table>

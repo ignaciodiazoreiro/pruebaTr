@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Subasta>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Monto)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Trueques.Descripcion)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Monto)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Trueques.Descripcion)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.IdTrueque }) |
+            @Html.ActionLink("Details", "Details", new { id=item.IdTrueque }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.IdTrueque })
+        </td>
+    </tr>
+}
+
+</table>

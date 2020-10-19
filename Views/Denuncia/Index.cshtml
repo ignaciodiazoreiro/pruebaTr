@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Denuncia>
+
+@{
+    ViewBag.Title = "Reportar Usuario";
+}
+
+@Styles.Render("~/Content/Comerciante/RegistroLogin.css")
+@Styles.Render("~/Content/Administrador/Administrador.css")
+@Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css")
+
+<!-- POPUP -->
+<div class="fondo-oscuro" id="fondo-oscuro">
+    <div class="popup-trueque mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>Seleccionar Trueque</h3>
+            </div>
+            <div class="card-body">
+                <p>Seleccione el trueque que desea reportar</p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#ID Trueque</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-trueques">
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body text-right">
+                <button type="button" class="btn btn-info" id="cerrar-popup">Cancelar</button>
+                <button type="button" class="btn btn-verde" id="aceptar-popup-denuncia">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR 2 -->
+<div class="containerNavBarGeneral">
+    <ul class="navBarGeneral">
+        <li class="navBarGeneralLink">
+            <a href="#">Reportes Pendientes</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="#">Administración de Usuarios</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="#">Estadísticas</a>
+        </li>
+        <li class="navBarGeneralLink">
+            <a href="#">Archivo de Reportes</a>
+        </li>
+    </ul>
+</div>
+
+<!-- CONTENIDO -->
+<div class="container-fluid h-100">
+    <div class="row pt-4 h-100 justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Reportar Usuario</h4>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <!-- ASUNTO -->
+                        <div class="form-group row">
+                            <label for="asunto-denuncia" class="col-form-label col-md-3">Asunto</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="asunto-denuncia">
+                                <div class="invalid-feedback" id="error-asunto"></div>
+                            </div>
+                        </div>
+
+                        <!-- DENUNCIADOS -->
+                        <div class="form-group row">
+                            <label for="denunciado-denuncia" class="col-form-label col-md-3">Usuarios a reportar</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <input type="email" class="form-control" id="denunciado-denuncia">
+                                    <button class="btn btn-verde btn-input" type="button" id="agregar-denunciado">Agregar</button>
+                                </div>
+                                <div class="invalid-feedback" id="error-denunciado"></div>
+                            </div>
+                        </div>
+
+                        <div id="lista-denunciados"></div>
+
+                        <!-- DESCRIPCION DE LA DENUNCIA -->
+                        <div class="form-group row">
+                            <label for="descripcion-denuncia" class="col-form-label col-md-3">Descripción</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" id="descripcion-denuncia" rows="5"></textarea>
+                                <div class="invalid-feedback" id="error-descripcion"></div>
+                            </div>
+                        </div>
+
+                        <!-- TRUEQUE -->
+                        <div class="form-group row">
+                            <label for="trueque-denuncia" class="col-form-label col-md-3">Trueque (Opcional)</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control campo-trueque" id="trueque-denuncia" placeholder="Click para Agregar" readonly>
+                            </div>
+                        </div>
+
+                        <!-- BOTON DE ENVIAR -->
+                        <div class="form-group row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9 text-right">
+                                <br>
+                                <a href="javascript:history.back()"><button type="button" class="btn btn-info">Cancelar</button></a>
+                                <button type="button" class="btn btn-verde" id="enviar-reporte">Enviar reporte</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery-3.5.0.min.js");
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js");
+    @Scripts.Render("~/Scripts/Denuncia/Denuncia.js");
+}

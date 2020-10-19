@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Perfil>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Pais)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrivacidadPais)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Provincia_Estado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Privacidad_ProvEstado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Canton_Ciudad)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Privacidad_CantCiudad)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Direccion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrivacidadDireccion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaNacimiento)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrivacidadFechaNacimiento)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Foto)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrivacidadFoto)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comerciante.Nombre)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Pais)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PrivacidadPais)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Provincia_Estado)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Privacidad_ProvEstado)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Canton_Ciudad)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Privacidad_CantCiudad)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Direccion)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PrivacidadDireccion)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.FechaNacimiento)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PrivacidadFechaNacimiento)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Foto)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PrivacidadFoto)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Comerciante.Nombre)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { id=item.ComercianteEmail }) |
+        @Html.ActionLink("Details", "Details", new { id=item.ComercianteEmail }) |
+        @Html.ActionLink("Delete", "Delete", new { id=item.ComercianteEmail })
+    </td>
+</tr>
+}
+
+</table>

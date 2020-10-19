@@ -1,0 +1,26 @@
+﻿@model Proyecto_TruequesUCR.Models.Directo
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Directo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Trueques.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Trueques.Descripcion)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.IdTrueque }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

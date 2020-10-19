@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Denuncia Exitosa";
+}
+
+<div class="container-fluid h-100 w-100 d-inline-block mt-5">
+    <div class="row justify-content-center h-100 w-100">
+        <div class="col-md-3 align-self-center">
+            <div class="card">
+                <img src="@Url.Content("~/Content/Images/check-registro.png")" class="card-img-top" alt="Denuncia Exitosa">
+                <div class="card-body">
+                    <h5 class="card-title">Denuncia Exitosa!</h5>
+                    <p class="card-text">Se ha enviado un reporte al administrador correspondiente. Gracias por su colaboración.</p>
+                    <div class="card-footer text-right">
+                        <a href="@Url.Action("Index", "Home")"><button class="btn btn-info" type="button">Volver a la página principal</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

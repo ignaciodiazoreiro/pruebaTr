@@ -1,0 +1,262 @@
+﻿@model IEnumerable<Proyecto_TruequesUCR.Models.Item>
+
+@{
+    ViewBag.Title = "IndexTruequesActivos";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trueques &#64 UCR</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/General.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/About.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body data-spy="scroll" data-target=".fixed-top" data-offset="60">
+
+    <nav aria-label="breadcrumb" id="breadcrumb-1">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/Home/Index">
+                    <img src="~/Content/Images/home.png" width="25" height="25" />
+                </a>
+            </li>
+            <li class="breadcrumb-item">Mis trueques activos</</li>
+        </ol>
+    </nav>
+
+    <div class="container text-center" id="titleMisTrueques" style="padding-top: 30px">
+        <h2>
+            <strong>Mis trueques activos </strong>
+        </h2>
+    </div>
+
+    <div class="container text-center" id="select">
+        <div class="row" style="padding-top: 30px">
+            <div class="col-lg-12">
+                <div class="wrapper" id="trueques_to_select" style="overflow-y: scroll; position:relative; height:500px;">
+
+                    @{
+                        List<int> ya_mostrados = new List<int>();
+                        List<int> ids = new List<int>();
+                        List<string> nombres = new List<string>();
+
+                        string nombreTrueque = "";
+                        string nombreCreacion = "";
+                        string tipo_trueque = "";
+
+                        var usuario = User.Identity.Name;
+
+                        foreach (var item in Model)
+                        {
+                            if (item.Email_Comerciante == usuario && item.Trueques != null)
+                            {
+                                ids.Add(item.Trueques.IdTrueque);
+                                nombres.Add("[" + item.Nombre_Categoria_Item + "]" + " " + item.Titulo);
+                            }
+                        }
+
+                        /*<script>
+                            var a = "@(string.Join(",", ids.Select(item => item.ToString()).ToArray()))";
+                            var b = "@(string.Join(" // ", nombres.Select(item => item.ToString()).ToArray()))";
+
+                            alert(a);
+                            alert(b);
+                        </script>*/
+
+                        foreach (var item in Model)
+                        {
+                            if (item.Email_Comerciante == usuario && item.Trueques != null)
+                            {
+                                int ocurrencia = 0;
+                                var idActual = 0;           // variable que almacenara el id del trueque en cada iteracion
+
+                                for (int i = 0; i < ids.Count && ocurrencia < 3; i++)
+                                {
+                                    if (ids[i] == item.Trueques.IdTrueque)
+                                    {
+                                        ocurrencia++;
+                                    }
+                                }
+
+                                if (!ya_mostrados.Contains(item.Trueques.IdTrueque) && item.Trueques.Estado == "Activo" && item.Email_Comerciante == User.Identity.Name)
+                                {
+                                    idActual = item.Trueques.IdTrueque;
+                                    ya_mostrados.Add(item.Trueques.IdTrueque);
+
+                                    <div class="itemGroup" id=trueques.ID style="padding-bottom: 2px; padding-right: 20px">
+                                        <!--<input id="@("check"+idActual)" name="opcion" type="button" onclick="location.href='@Url.Action("DetalleTrueque", "Items", new { id = idActual })'" value="@(idActual)" />-->
+                                        <input id="@("check"+idActual)" name="opcion" value="@(idActual)" />
+
+                                        <label for="@("check"+idActual)">
+                                            @{
+
+                                                nombreCreacion = "Creado el " + ((DateTime)item.Trueques.FechaCreacion).ToString("dd'/'MM'/'yyyy");
+
+                                                switch (ocurrencia)
+                                                {
+                                                    case 1:
+
+                                                        byte[] foto = null;
+
+                                                        if (item.Fotos != null)
+                                                        {
+                                                            foreach (var i in item.Fotos)
+                                                            {
+                                                                if (i.Foto != null)
+                                                                {
+                                                                    foto = i.Foto;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        if (foto != null)
+                                                        {
+                                                            String img64 = Convert.ToBase64String(foto);
+                                                            String img64Url = string.Format("data:image/" + "jepg" + ";base64,{0}", img64);
+                                                            <img src="@img64Url" width="35" height="35" class="align-self-center" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Content/Images/default_item.png" width="35" height="35" class="align-self-center" />
+                                                        }
+
+                                                        nombreTrueque = "[" + item.Nombre_Categoria_Item + "]" + " " + item.Titulo;
+                                                        break;
+
+                                                    case 2:
+
+                                                        <img src="~/Content/Images/trueque_default.png" width="35" height="35" class="align-self-center" />
+
+                                                        int ocurrencia_2 = 0;
+
+                                                        for (int i = 0; i < ids.Count && ocurrencia_2 < 2; i++)
+                                                        {
+                                                            if (ids[i] == idActual)
+                                                            {
+                                                                nombreTrueque += nombres[i];
+                                                                ocurrencia_2++;
+
+                                                                if (ocurrencia_2 == 1)
+                                                                {
+                                                                    nombreTrueque += " y ";
+                                                                }
+                                                            }
+
+                                                        }
+
+                                                        break;
+
+                                                    case 3:
+
+                                                        <img src="~/Content/Images/trueque_default.png" width="35" height="35" class="align-self-center" />
+
+                                                        int ocurrencia_3 = 0;
+
+                                                        for (int i = 0; i < ids.Count && ocurrencia_3 < 2; i++)
+                                                        {
+                                                            if (ids[i] == idActual)
+                                                            {
+                                                                nombreTrueque += nombres[i];
+                                                                ocurrencia_3++;
+                                                                if (ocurrencia_3 == 1)
+                                                                {
+                                                                    nombreTrueque += ", ";
+                                                                }
+
+                                                                if (ocurrencia_3 == 2)
+                                                                {
+                                                                    nombreTrueque += ", entre otros";
+                                                                }
+                                                            }
+                                                        }
+
+                                                        break;
+                                                }
+                                            }
+
+                                            @if (item.Trueques.Tipo == "Subasta")
+                                            {
+                                                tipo_trueque = item.Trueques.Tipo + " de ";
+                                            }
+                                            else
+                                            {
+                                                tipo_trueque = "Trueque " + item.Trueques.Tipo.ToLower() + " de ";
+                                            }
+
+                                            @tipo_trueque <strong>@(nombreTrueque)</strong> &nbsp;&nbsp;&nbsp;&nbsp; @nombreCreacion
+
+                                            @(nombreTrueque = "")
+                                            @(nombreCreacion = "")
+
+                                            @Html.ActionLink("Editar", "EditarTrueque", "Trueques", new { id = idActual }, new { id = "right" })
+                                            <a href="#@("delete"+idActual)" id="right" data-toggle="modal" data-target="#@("del"+idActual)">Eliminar</a>
+                                            @Html.ActionLink("Detalles", "DetalleTrueque", "Trueques", new { id = idActual, predecesor = "activos" }, new { id = "right" })
+                                        </label>
+                                    </div>
+
+                                    /* Actividad supervisada 26/05/2020 */
+                                    /* Josué Amador, Turing Team, Scrum Master */
+                                    /* A grandes rasgos, implementar funcionalidad de cancelar/eliminar trueque */
+
+                                    <div class="modal fade" id="@("del"+idActual)" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <!-- se agrega el id del trueque como parte del nombre del componente -->
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ¿Está seguro que desea eliminar el trueque?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                    <!-- se agrega el id del trueque como parte del nombre del componente -->
+                                                    <input id="@("confElim"+idActual)" type="submit" value="Eliminar" class="btn btn-primary" onclick=borrarTrueque(@idActual) />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteSuccess" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><strong>¡Su trueque ha sido eliminado!</strong></h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Su trueque ya no existe ni es visible para ningún usuario. Está ahora en Mis trueques eliminados.
+                        Los ítems que pertenecían a él ahora nuevamente están disponibles para ser añadidos a otros trueques.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    @Html.ActionLink("Aceptar", "IndexTruequesActivos", "Trueques", null, new { @class = "btn btn-success" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/Trueques.js"></script>
+
+</body>
+</html>
